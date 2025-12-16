@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FCB · Printing Lab · Ready for Pickup</title>
+
+  <style>
+    :root{
+      --blau:#004D98;
+      --grana:#A50044;
+      --gold:#EDBB00;
+      --card: rgba(10, 18, 30, .72);
+      --line: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 22px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#050A12; color:var(--text); overflow:hidden;}
+
+    body::before{
+      content:"";
+      position:fixed; inset:-40px;
+      background:
+        radial-gradient(1100px 700px at 20% 10%, rgba(237,187,0,.16), transparent 60%),
+        radial-gradient(900px 650px at 80% 20%, rgba(165,0,68,.22), transparent 55%),
+        radial-gradient(1000px 800px at 50% 110%, rgba(0,77,152,.35), transparent 60%),
+        linear-gradient(135deg, rgba(0,77,152,.55), rgba(165,0,68,.55)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,.03) 0px,
+          rgba(255,255,255,.03) 42px,
+          rgba(0,0,0,.00) 42px,
+          rgba(0,0,0,.00) 84px
+        );
+      filter:saturate(1.1) contrast(1.05);
+      transform:scale(1.05);
+      z-index:-2;
+    }
+    body::after{
+      content:"";
+      position:fixed; inset:0;
+      background: radial-gradient(circle at 50% 40%, rgba(0,0,0,.05), rgba(0,0,0,.65));
+      z-index:-1;
+    }
+
+    .wrap{
+      height:100%;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:16px;
+      padding:28px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:14px;
+      padding:12px 16px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      backdrop-filter: blur(10px);
+    }
+
+    .crest{
+      width:60px;
+      height:60px;
+      object-fit:contain;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,.35));
+    }
+
+    .brand h1{ margin:0; font-size:18px; letter-spacing:.5px; }
+    .brand .sub{ margin:0; font-size:12px; color:var(--muted); }
+
+    .rightMeta{ display:flex; gap:10px; align-items:center; }
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+      font-size:12px;
+      color:var(--muted);
+      display:flex; gap:10px; align-items:center;
+      min-width: 190px;
+      justify-content:space-between;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--gold);
+      box-shadow: 0 0 14px rgba(237,187,0,.55);
+    }
+    .btn{
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.86);
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:12px;
+      backdrop-filter: blur(10px);
+      user-select:none;
+    }
+    .btn:hover{ border-color: rgba(237,187,0,.4); }
+
+    main{
+      min-height:0;
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:16px;
+    }
+
+    .panel{
+      background: var(--card);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+      position:relative;
+    }
+    .panelHeader{
+      padding:18px 18px 14px 18px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:16px;
+    }
+    .panelHeader h2{ margin:0; font-size:18px; letter-spacing:.6px; }
+    .panelHeader p{ margin:0; font-size:12px; color:var(--muted); }
+
+    table{ width:100%; border-collapse:collapse; font-variant-numeric: tabular-nums; }
+    thead th{
+      text-align:left;
+      padding:12px 18px;
+      font-size:12px;
+      color:rgba(255,255,255,.7);
+      letter-spacing:.6px;
+      text-transform:uppercase;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.18);
+    }
+    tbody td{
+      padding:14px 18px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      font-size:16px;
+    }
+
+    .status{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.86);
+      font-size:13px;
+    }
+    .status.ready{
+      border-color: rgba(237,187,0,.45);
+      background: rgba(237,187,0,.12);
+      color: rgba(255,255,255,.95);
+    }
+    .status .miniDot{ width:8px; height:8px; border-radius:50%; background: rgba(255,255,255,.35); }
+    .status.ready .miniDot{ background: var(--gold); box-shadow: 0 0 14px rgba(237,187,0,.65); }
+
+    .highlightRow{
+      background: linear-gradient(90deg, rgba(237,187,0,.16), rgba(165,0,68,.10), rgba(0,77,152,.10));
+      box-shadow: inset 0 0 0 1px rgba(237,187,0,.18);
+    }
+    .highlightRow td:first-child{ position:relative; }
+    .highlightRow td:first-child::before{
+      content:"";
+      position:absolute; left:-18px; top:50%;
+      width:4px; height:26px;
+      background: var(--gold);
+      border-radius:8px;
+      transform: translateY(-50%);
+      box-shadow: 0 0 18px rgba(237,187,0,.65);
+    }
+
+    /* Right panel */
+    .callout{ display:flex; flex-direction:column; height:100%; }
+    .calloutBody{ padding:18px; display:flex; flex-direction:column; gap:14px; }
+    .bigNumber{ font-size:46px; font-weight:800; letter-spacing:1px; line-height:1; }
+    .label{ color:var(--muted); font-size:12px; letter-spacing:.6px; text-transform:uppercase; }
+    .nowServing{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      display:grid;
+      gap:10px;
+    }
+    .name{ font-size:26px; font-weight:800; letter-spacing:1px; }
+
+    /* GOAL overlay */
+    .goalOverlay{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      z-index:50;
+      background: radial-gradient(circle at 50% 40%, rgba(0,0,0,.25), rgba(0,0,0,.82));
+    }
+    .goalOverlay.show{ display:flex; }
+    .goalCard{
+      width:min(980px, 92vw);
+      border-radius:30px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        linear-gradient(135deg, rgba(0,77,152,.55), rgba(165,0,68,.55)),
+        radial-gradient(800px 300px at 20% 0%, rgba(237,187,0,.22), transparent 60%);
+      box-shadow: 0 35px 110px rgba(0,0,0,.6);
+      overflow:hidden;
+      position:relative;
+      transform: translateY(16px) scale(.98);
+      opacity:0;
+      animation: popIn .55s ease forwards;
+    }
+    @keyframes popIn{ to{ transform: translateY(0) scale(1); opacity:1; } }
+
+    .goalTop{
+      padding:22px 26px 10px 26px;
+      display:flex; justify-content:space-between; align-items:center; gap:14px;
+    }
+    .goalTop .tag{
+      display:inline-flex; gap:10px; align-items:center;
+      padding:10px 14px;
+      border-radius:999px;
+      background: rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.14);
+      font-size:12px;
+      color:rgba(255,255,255,.82);
+      letter-spacing:.5px;
+      text-transform:uppercase;
+    }
+    .goalTop .tag .spark{
+      width:10px; height:10px; border-radius:50%;
+      background: var(--gold);
+      box-shadow: 0 0 18px rgba(237,187,0,.8);
+    }
+
+    .goalCrest{
+      width:44px;
+      height:44px;
+      object-fit:contain;
+      opacity:.92;
+      filter: drop-shadow(0 10px 28px rgba(0,0,0,.45));
+    }
+
+    .goalMain{ padding: 10px 26px 26px 26px; display:grid; gap:10px; text-align:center; }
+    .goalMain .goal{
+      font-size:74px;
+      font-weight:1000;
+      letter-spacing: 2px;
+      line-height:1;
+      text-shadow: 0 14px 40px rgba(0,0,0,.35);
+      transform: translateY(8px);
+      animation: chant 1.8s ease-in-out infinite;
+    }
+    @keyframes chant{
+      0%,100%{ transform: translateY(6px) scale(1); }
+      50%{ transform: translateY(0px) scale(1.02); }
+    }
+    .goalMain .member{ font-size:22px; font-weight:800; letter-spacing:1px; opacity:.95; }
+    .goalMain .who{
+      margin-top:8px;
+      font-size:14px;
+      color: rgba(255,255,255,.78);
+      letter-spacing:.4px;
+    }
+
+    /* Confetti */
+    .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+    .confetti i{
+      position:absolute;
+      top:-12%;
+      border-radius:3px;
+      opacity:.95;
+      transform: rotate(12deg);
+      animation: fall linear forwards;
+    }
+    @keyframes fall{
+      to{ transform: translateY(130vh) rotate(520deg); opacity:.9; }
+    }
+
+    footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color: rgba(255,255,255,.65);
+      font-size:12px;
+      padding:0 4px;
+    }
+    .hint{ display:flex; align-items:center; gap:10px; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <!-- Escudo Barça -->
+        <img class="crest" src="assets/logo.png" alt="FC Barcelona" />
+        <div>
+          <h1>Printing Lab · Ready for Pickup</h1>
+          <p class="sub">FC Barcelona · Signage</p>
+        </div>
+      </div>
+
+      <div class="rightMeta">
+        <div class="pill" title="Estado de conexión (demo)">
+          <span style="display:flex;align-items:center;gap:10px;">
+            <span class="dot"></span>
+            <span>LIVE</span>
+          </span>
+          <span id="clock"></span>
+        </div>
+        <div class="btn" id="toggleSound">🔊 Activar sonido</div>
+      </div>
+    </header>
+
+    <main>
+      <!-- TABLE -->
+      <section class="panel">
+        <div class="panelHeader">
+          <div>
+            <h2>Pedidos listos para recoger</h2>
+            <p>Se anuncian automáticamente al pasar a <b>Ready for pickup</b>.</p>
+          </div>
+          <div style="text-align:right">
+            <p class="label">Último anuncio</p>
+            <p style="margin:0;font-weight:700" id="lastAnnounce">—</p>
+          </div>
+        </div>
+
+        <div style="height:calc(100% - 64px); overflow:hidden;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:18%">Nº Order</th>
+                <th style="width:32%">Name</th>
+                <th style="width:50%">Status</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CALLOUT -->
+      <aside class="panel callout">
+        <div class="panelHeader">
+          <div>
+            <h2>Now serving</h2>
+            <p>El siguiente en recoger</p>
+          </div>
+        </div>
+
+        <div class="calloutBody">
+          <div class="nowServing">
+            <div class="label">Order</div>
+            <div class="bigNumber" id="nowOrder">—</div>
+            <div class="label">Name</div>
+            <div class="name" id="nowName">—</div>
+            <div class="label">Status</div>
+            <div>
+              <span class="status ready"><span class="miniDot"></span> Ready for pickup</span>
+            </div>
+          </div>
+
+          <div class="nowServing">
+            <div class="label">Siguiente refresco</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div style="font-weight:800;letter-spacing:.6px" id="nextRefresh">—</div>
+              <div style="color:var(--muted);font-size:12px;">(simulado)</div>
+            </div>
+            <div style="color:var(--muted);font-size:12px;line-height:1.4;">
+              En producción: sustituye el polling simulado por <b>fetch()</b> a tu API real / SSE / WebSocket.
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <div class="hint">
+        <span style="opacity:.85">⚽</span>
+        <span>Tip signage: pantalla completa, sin scroll, contenido cacheable.</span>
+      </div>
+      <div style="opacity:.75">FCB · Demo · v1.1</div>
+    </footer>
+  </div>
+
+  <!-- GOAL OVERLAY -->
+  <div class="goalOverlay" id="overlay" role="dialog" aria-modal="true" aria-label="New ready order announcement">
+    <div class="goalCard">
+      <div class="confetti" id="confetti"></div>
+
+      <div class="goalTop">
+        <div class="tag"><span class="spark"></span> Ready for pickup</div>
+        <!-- Escudo en overlay -->
+        <img class="goalCrest" src="assets/logo.png" alt="FC Barcelona" />
+      </div>
+
+      <div class="goalMain">
+        <div class="goal">GOOOAL!</div>
+        <div class="member">NEW MEMBER TO THE CLUB</div>
+        <div class="who" id="announceWho">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO (se reproduce solo 7 segundos) -->
+  <audio id="goalChant" preload="auto">
+    <source src="audio/FC_Barcelona_NEW_goal_song 25_26.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    /*****************
+     * Config
+     *****************/
+    const POLL_EVERY_SEC = 6;
+    const GOAL_AUDIO_DURATION_MS = 7000; // 7s exactos
+    const ANNOUNCE_MS = 7500;            // overlay un pelín más largo
+
+    // demo: forzar entrada de los 2 nombres pedidos
+    const FORCED_READY_SEQUENCE = [
+      { delayMs: 2500,  order: 159010, name: "JESÚS MILLA" },
+      { delayMs: 11500, order: 159011, name: "ALBERT GARRIGA" }
+    ];
+
+    /*****************
+     * Demo data
+     *****************/
+    const INITIAL = [
+      { order: 135037, name: "JAUME",     status: "Ready for pickup", ready: true,  announced: true },
+      { order: 147765, name: "RAPHINHA",  status: "Ready for pickup", ready: true,  announced: true },
+      { order: 149102, name: "PEDRI",     status: "Printing",         ready: false, announced: false },
+      { order: 149211, name: "GAVI",      status: "Picking Name",     ready: false, announced: false },
+      { order: 149254, name: "LAMINE",    status: "Plottering",       ready: false, announced: false },
+    ];
+
+    const DEMO_NAMES = [
+      "JESÚS MILLA",
+      "ALBERT GARRIGA",
+      "ARAUJO","BALDE","FERRAN","KOUNDÉ","DE JONG",
+      "CANCELO","LEWANDOWSKI","TER STEGEN","JOAO FELIX"
+    ];
+
+    /*****************
+     * State
+     *****************/
+    let items = structuredClone(INITIAL);
+    let soundEnabled = false;
+    let goalAudioTimeout = null;
+
+    /*****************
+     * DOM
+     *****************/
+    const rowsEl = document.getElementById("rows");
+    const nowOrderEl = document.getElementById("nowOrder");
+    const nowNameEl = document.getElementById("nowName");
+    const lastAnnounceEl = document.getElementById("lastAnnounce");
+    const overlayEl = document.getElementById("overlay");
+    const announceWhoEl = document.getElementById("announceWho");
+    const confettiEl = document.getElementById("confetti");
+    const clockEl = document.getElementById("clock");
+    const nextRefreshEl = document.getElementById("nextRefresh");
+    const audioEl = document.getElementById("goalChant");
+
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function fmtTime(d){ return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; }
+
+    function render(){
+      const sorted = [...items].sort((a,b) => (b.ready - a.ready) || (a.order - b.order));
+
+      const firstReady = sorted.find(x => x.ready);
+      nowOrderEl.textContent = firstReady ? firstReady.order : "—";
+      nowNameEl.textContent = firstReady ? firstReady.name : "—";
+
+      rowsEl.innerHTML = "";
+      for(const it of sorted.slice(0, 10)){
+        const tr = document.createElement("tr");
+        if(it._highlight) tr.classList.add("highlightRow");
+
+        const tdOrder = document.createElement("td");
+        tdOrder.textContent = it.order;
+
+        const tdName = document.createElement("td");
+        tdName.style.fontWeight = "800";
+        tdName.style.letterSpacing = ".8px";
+        tdName.textContent = it.name;
+
+        const tdStatus = document.createElement("td");
+        const pill = document.createElement("span");
+        pill.className = "status" + (it.ready ? " ready" : "");
+        pill.innerHTML = `<span class="miniDot"></span> ${it.ready ? "Ready for pickup" : it.status}`;
+        tdStatus.appendChild(pill);
+
+        tr.appendChild(tdOrder);
+        tr.appendChild(tdName);
+        tr.appendChild(tdStatus);
+
+        rowsEl.appendChild(tr);
+      }
+    }
+
+    function setClock(){
+      clockEl.textContent = fmtTime(new Date());
+    }
+
+    function setNextRefresh(seconds){
+      const now = new Date();
+      const next = new Date(now.getTime() + seconds*1000);
+      nextRefreshEl.textContent = `${fmtTime(next)} (+${seconds}s)`;
+    }
+
+    /*****************
+     * Audio: play only 7 seconds
+     *****************/
+    function playGoalChant7s(){
+      if(!soundEnabled) return;
+
+      try{
+        if(goalAudioTimeout){
+          clearTimeout(goalAudioTimeout);
+          goalAudioTimeout = null;
+        }
+
+        audioEl.pause();
+        audioEl.currentTime = 0;
+        audioEl.volume = 1.0;
+
+        audioEl.play().catch(()=>{});
+
+        goalAudioTimeout = setTimeout(() => {
+          audioEl.pause();
+          audioEl.currentTime = 0;
+        }, GOAL_AUDIO_DURATION_MS);
+      }catch(e){}
+    }
+
+    /*****************
+     * Confetti
+     *****************/
+    function buildConfetti(){
+      confettiEl.innerHTML = "";
+      const colors = ["#EDBB00", "#FFFFFF", "#A50044", "#004D98"];
+      const count = 62;
+
+      for(let i=0;i<count;i++){
+        const c = document.createElement("i");
+        c.style.left = (Math.random()*100) + "%";
+        c.style.animationDelay = (Math.random()*0.25) + "s";
+        c.style.animationDuration = (1.9 + Math.random()*1.3) + "s";
+        c.style.background = colors[(Math.random()*colors.length)|0];
+
+        const w = 8 + Math.random()*9;
+        const h = 14 + Math.random()*18;
+        c.style.width = w + "px";
+        c.style.height = h + "px";
+
+        confettiEl.appendChild(c);
+      }
+    }
+
+    /*****************
+     * Announcement
+     *****************/
+    function announce(item){
+      items.forEach(x => x._highlight = false);
+      item._highlight = true;
+      render();
+
+      lastAnnounceEl.textContent = fmtTime(new Date());
+      announceWhoEl.innerHTML = `Pedido <b>#${item.order}</b> · <b>${item.name}</b> — ¡puede pasar a recogerlo!`;
+
+      buildConfetti();
+      overlayEl.classList.add("show");
+      playGoalChant7s();
+
+      setTimeout(() => {
+        overlayEl.classList.remove("show");
+        item._highlight = false;
+        render();
+      }, ANNOUNCE_MS);
+    }
+
+    /*****************
+     * Simulation (polling)
+     *****************/
+    function randomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+    function simulatePoll(){
+      const r = Math.random();
+
+      if(r < 0.55){
+        const pending = items.filter(x => !x.ready);
+        if(pending.length){
+          const pick = pending[(Math.random()*pending.length)|0];
+          pick.ready = true;
+          pick.status = "Ready for pickup";
+        }
+      }else{
+        const newOrder = (items.reduce((m,x)=>Math.max(m,x.order), 140000) + randomInt(7, 62));
+        const name = DEMO_NAMES[(Math.random()*DEMO_NAMES.length)|0];
+        const statuses = ["Picking Name","Picking Number & Letter","Printing","Plottering"];
+        const st = statuses[(Math.random()*statuses.length)|0];
+        items.push({ order: newOrder, name, status: st, ready: false, announced: false });
+      }
+
+      const newlyReady = items.filter(x => x.ready && !x.announced).sort((a,b) => a.order - b.order);
+
+      if(newlyReady.length){
+        const item = newlyReady[0];
+        item.announced = true;
+        announce(item);
+      }else{
+        render();
+      }
+    }
+
+    function forceReady(order, name){
+      const item = { order, name, status: "Ready for pickup", ready: true, announced: false };
+      items.unshift(item);
+      setTimeout(() => {
+        item.announced = true;
+        announce(item);
+      }, 80);
+    }
+
+    /*****************
+     * Boot
+     *****************/
+    render();
+    setClock();
+    setNextRefresh(POLL_EVERY_SEC);
+    setInterval(setClock, 1000);
+
+    let countdown = POLL_EVERY_SEC;
+    setInterval(() => {
+      countdown--;
+      if(countdown <= 0){
+        countdown = POLL_EVERY_SEC;
+        simulatePoll();
+      }
+      setNextRefresh(countdown);
+    }, 1000);
+
+    overlayEl.addEventListener("click", () => overlayEl.classList.remove("show"));
+
+    document.getElementById("toggleSound").addEventListener("click", (e) => {
+      soundEnabled = !soundEnabled;
+      e.currentTarget.textContent = soundEnabled ? "🔇 Desactivar sonido" : "🔊 Activar sonido";
+
+      // unlock audio pipeline
+      if(soundEnabled){
+        audioEl.play().then(()=>audioEl.pause()).catch(()=>{});
+      }else{
+        try{
+          if(goalAudioTimeout) clearTimeout(goalAudioTimeout);
+          audioEl.pause();
+          audioEl.currentTime = 0;
+        }catch(_){}
+      }
+    });
+
+    // demo: ensure requested names appear
+    for(const f of FORCED_READY_SEQUENCE){
+      setTimeout(() => forceReady(f.order, f.name), f.delayMs);
+    }
+  </script>
+</body>
+</html>
