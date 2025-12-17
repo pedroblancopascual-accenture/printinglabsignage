@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FCB · Printing Lab · Ready for Pickup</title>
+  <title>FCB · Printing Lab · Dual Signage</title>
 
   <style>
     :root{
@@ -11,11 +11,12 @@
       --grana:#A50044;
       --gold:#EDBB00;
       --card: rgba(10, 18, 30, .72);
-      --line: rgba(255,255,255,.12);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.68);
       --shadow: 0 18px 60px rgba(0,0,0,.45);
       --radius: 22px;
+      --bezel: rgba(0,0,0,.35);
+      --bezelLine: rgba(255,255,255,.10);
     }
 
     *{ box-sizing:border-box; }
@@ -51,19 +52,13 @@
       z-index:-1;
     }
 
-    .wrap{
-      height:100%;
-      display:grid;
-      grid-template-rows:auto 1fr auto;
-      gap:16px;
-      padding:28px;
-    }
-
-    header{
+    /* Top bar */
+    .topbar{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:16px;
+      padding:18px 22px 12px 22px;
     }
 
     .brand{
@@ -74,18 +69,14 @@
       border-radius:999px;
       backdrop-filter: blur(10px);
     }
-
     .crest{
-      width:34px;
-      height:34px;
-      object-fit:contain;
+      width:34px; height:34px; object-fit:contain;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,.35));
     }
-
-    .brand h1{ margin:0; font-size:18px; letter-spacing:.5px; }
+    .brand h1{ margin:0; font-size:16px; letter-spacing:.5px; }
     .brand .sub{ margin:0; font-size:12px; color:var(--muted); }
 
-    .rightMeta{ display:flex; gap:10px; align-items:center; }
+    .rightMeta{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
     .pill{
       padding:10px 12px;
       border-radius:999px;
@@ -95,7 +86,7 @@
       font-size:12px;
       color:var(--muted);
       display:flex; gap:10px; align-items:center;
-      min-width: 210px;
+      min-width: 220px;
       justify-content:space-between;
     }
     .dot{
@@ -113,16 +104,98 @@
       font-size:12px;
       backdrop-filter: blur(10px);
       user-select:none;
+      white-space:nowrap;
     }
     .btn:hover{ border-color: rgba(237,187,0,.4); }
 
-    main{
-      min-height:0;
-      display:grid;
-      grid-template-columns: 1.25fr .75fr;
-      gap:16px;
+    .modes{
+      display:flex; gap:8px; align-items:center;
+      padding:8px;
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+    }
+    .mode{
+      cursor:pointer;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.82);
+      font-size:12px;
+      letter-spacing:.6px;
+      text-transform:uppercase;
+    }
+    .mode.active{
+      border-color: rgba(237,187,0,.55);
+      background: rgba(237,187,0,.14);
+      box-shadow: 0 0 0 1px rgba(237,187,0,.10) inset;
+      color: rgba(255,255,255,.95);
     }
 
+    /* Screens container */
+    .screens{
+      height: calc(100% - 76px);
+      padding: 0 22px 22px 22px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:16px;
+      min-height:0;
+    }
+
+    /* Screen frame (bezel) */
+    .screen{
+      position:relative;
+      border-radius: 26px;
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.55));
+      border: 1px solid var(--bezelLine);
+      box-shadow: 0 22px 70px rgba(0,0,0,.55);
+      min-height:0;
+      overflow:hidden;
+    }
+    .screen::before{
+      content:"";
+      position:absolute; inset: 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.08);
+      pointer-events:none;
+    }
+    .screenHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 10px 10px 12px 10px;
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      letter-spacing:.6px;
+      text-transform: uppercase;
+    }
+    .screenHeader .left{
+      display:flex; align-items:center; gap:10px;
+    }
+    .screenBadge{
+      width:10px; height:10px; border-radius:50%;
+      background: rgba(255,255,255,.25);
+      box-shadow: 0 0 0 0 rgba(237,187,0,0);
+    }
+    .screenTitle{
+      font-weight:900;
+      color: rgba(255,255,255,.9);
+    }
+    .screenBody{
+      position:relative;
+      height: calc(100% - 44px);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      min-height:0;
+    }
+
+    /* Panel primitives */
     .panel{
       background: var(--card);
       border:1px solid rgba(255,255,255,.10);
@@ -141,6 +214,22 @@
     .panelHeader h2{ margin:0; font-size:18px; letter-spacing:.6px; }
     .panelHeader p{ margin:0; font-size:12px; color:var(--muted); }
 
+    /* Screen 1 layout */
+    .s1{
+      height:100%;
+      display:grid;
+      grid-template-rows: 1fr auto;
+      gap:14px;
+      padding:14px;
+      min-height:0;
+    }
+    .s1Top{
+      min-height:0;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+
     table{ width:100%; border-collapse:collapse; font-variant-numeric: tabular-nums; }
     thead th{
       text-align:left;
@@ -158,7 +247,6 @@
       font-size:16px;
     }
 
-    /* READY = amarillo Barça */
     .status{
       display:inline-flex; align-items:center; gap:10px;
       padding:8px 12px;
@@ -178,6 +266,17 @@
     .status .miniDot{ width:8px; height:8px; border-radius:50%; background: rgba(255,255,255,.35); }
     .status.ready .miniDot{ background: var(--gold); box-shadow: 0 0 14px rgba(237,187,0,.65); }
 
+    .qtyPill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.88);
+      font-size:13px;
+    }
+    .qtyPill b{ letter-spacing:.6px; }
+
     .highlightRow{
       background: linear-gradient(90deg, rgba(237,187,0,.16), rgba(165,0,68,.10), rgba(0,77,152,.10));
       box-shadow: inset 0 0 0 1px rgba(237,187,0,.18);
@@ -193,10 +292,8 @@
       box-shadow: 0 0 18px rgba(237,187,0,.65);
     }
 
-    /* Right panel */
-    .callout{ display:flex; flex-direction:column; height:100%; }
     .calloutBody{ padding:18px; display:flex; flex-direction:column; gap:14px; }
-    .bigNumber{ font-size:46px; font-weight:800; letter-spacing:1px; line-height:1; }
+    .bigNumber{ font-size:46px; font-weight:900; letter-spacing:1px; line-height:1; }
     .label{ color:var(--muted); font-size:12px; letter-spacing:.6px; text-transform:uppercase; }
     .nowServing{
       padding:16px;
@@ -206,26 +303,83 @@
       display:grid;
       gap:10px;
     }
-    .name{ font-size:26px; font-weight:800; letter-spacing:1px; }
-    .number{ font-size:20px; font-weight:900; letter-spacing:1px; opacity:.95; }
+    .desc{ font-size:14px; color:rgba(255,255,255,.84); line-height:1.35; }
+    .desc b{ color:rgba(255,255,255,.95); }
 
-    /* GOAL overlay */
+    /* Screen 2 base (always-on detail) */
+    .s2{
+      height:100%;
+      padding:14px;
+      display:grid;
+      grid-template-rows: auto 1fr;
+      gap:14px;
+      min-height:0;
+    }
+    .hero{
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      padding: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .heroLeft{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .heroTitle{
+      font-size: 14px;
+      letter-spacing:.6px;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.76);
+    }
+    .heroOrder{
+      font-size: 34px;
+      font-weight: 1000;
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .heroMeta{
+      color: rgba(255,255,255,.78);
+      font-size: 13px;
+    }
+    .heroCrest{
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      opacity: .92;
+      filter: drop-shadow(0 10px 28px rgba(0,0,0,.45));
+    }
+
+    /* GOAL overlay inside Screen 2 */
+    .goalStage{
+      position:relative;
+      min-height:0;
+      border-radius: 22px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+    }
+
     .goalOverlay{
-      position:fixed; inset:0;
+      position:absolute; inset:0;
       display:none;
       align-items:center; justify-content:center;
-      z-index:9999; /* asegura primer plano */
+      z-index:5;
       background: radial-gradient(circle at 50% 40%, rgba(0,0,0,.25), rgba(0,0,0,.82));
     }
     .goalOverlay.show{ display:flex; }
 
     .goalCard{
-      width:min(1040px, 94vw);
-      border-radius:30px;
+      width:min(900px, 92%);
+      border-radius:28px;
       border:1px solid rgba(255,255,255,.14);
       background:
         linear-gradient(135deg, rgba(0,77,152,.55), rgba(165,0,68,.55)),
-        radial-gradient(800px 300px at 20% 0%, rgba(237,187,0,.22), transparent 60%);
+        radial-gradient(700px 260px at 20% 0%, rgba(237,187,0,.22), transparent 60%);
       box-shadow: 0 35px 110px rgba(0,0,0,.6);
       overflow:hidden;
       position:relative;
@@ -235,8 +389,19 @@
     }
     @keyframes popIn{ to{ transform: translateY(0) scale(1); opacity:1; } }
 
+    .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+    .confetti i{
+      position:absolute;
+      top:-12%;
+      border-radius:3px;
+      opacity:.95;
+      transform: rotate(12deg);
+      animation: fall linear forwards;
+    }
+    @keyframes fall{ to{ transform: translateY(130vh) rotate(520deg); opacity:.9; } }
+
     .goalTop{
-      padding:22px 26px 10px 26px;
+      padding:18px 22px 8px 22px;
       display:flex; justify-content:space-between; align-items:center; gap:14px;
     }
     .goalTop .tag{
@@ -255,20 +420,15 @@
       background: var(--gold);
       box-shadow: 0 0 18px rgba(237,187,0,.8);
     }
-    .goalCrest{
-      width:44px; height:44px; object-fit:contain;
-      opacity:.92;
-      filter: drop-shadow(0 10px 28px rgba(0,0,0,.45));
-    }
 
     .goalMain{
-      padding: 8px 26px 26px 26px;
+      padding: 6px 22px 18px 22px;
       display:grid;
-      gap:14px;
+      gap:12px;
       text-align:center;
     }
-    .goalMain .goal{
-      font-size:74px;
+    .goal{
+      font-size:64px;
       font-weight:1000;
       letter-spacing: 2px;
       line-height:1;
@@ -279,197 +439,335 @@
       0%,100%{ transform: translateY(6px) scale(1); }
       50%{ transform: translateY(0px) scale(1.02); }
     }
-    .goalMain .member{
-      font-size:22px;
-      font-weight:800;
+    .member{
+      font-size:18px;
+      font-weight:900;
       letter-spacing:1px;
+      opacity:.96;
+    }
+
+    /* Carousel (slide) */
+    .carouselWrap{
+      width:min(640px, 92%);
+      margin: 0 auto;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      padding:14px 14px 12px 14px;
+    }
+    .carouselStage{
+      position:relative;
+      border-radius:18px;
+      overflow:hidden;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      padding:14px;
+      height: 360px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .carouselTrack{ position:relative; width:100%; height:100%; }
+    .carouselImg{
+      position:absolute;
+      inset:14px;
+      width: calc(100% - 28px);
+      height: calc(100% - 28px);
+      object-fit: contain;
+      border-radius:14px;
+      opacity:1;
+      transform: translateX(0);
+      will-change: transform, opacity;
+      filter: drop-shadow(0 14px 30px rgba(0,0,0,.35));
+    }
+    .outLeft{
+      opacity:0;
+      transform: translateX(-18%);
+      transition: transform .55s ease, opacity .55s ease;
+    }
+    .inRight{
+      opacity:0;
+      transform: translateX(18%);
+    }
+    .inToCenter{
+      opacity:1;
+      transform: translateX(0);
+      transition: transform .55s ease, opacity .55s ease;
+    }
+
+    .dots{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin-top:10px;
       opacity:.95;
     }
-
-    /* Jersey asset + giro 360 */
-    .jerseyFrame{
-      perspective: 900px;
-      margin: 0 auto;
-      width:min(520px, 70vw);
-      border-radius:24px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      box-shadow: 0 18px 55px rgba(0,0,0,.45);
-      padding:16px;
+    .dotItem{
+      width:8px; height:8px; border-radius:999px;
+      background: rgba(255,255,255,.20);
+      border:1px solid rgba(255,255,255,.18);
+      transition: all .25s ease;
     }
-    .jerseyImg{
-      width:100%;
-      height:auto;
-      display:block;
-      border-radius:16px;
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
-      will-change: transform;
-    }
-    .goalOverlay.show .jerseyImg{
-      animation: spin360 1.45s ease-in-out 0.05s 1;
-    }
-    @keyframes spin360{
-      0%   { transform: rotateY(0deg)   scale(0.98); }
-      40%  { transform: rotateY(180deg) scale(1.03); }
-      100% { transform: rotateY(360deg) scale(1.00); }
+    .dotItem.active{
+      width:18px;
+      background: rgba(237,187,0,.85);
+      border-color: rgba(237,187,0,.65);
+      box-shadow: 0 0 16px rgba(237,187,0,.45);
     }
 
-    .goalMain .who{
-      margin-top:4px;
+    .carouselMeta{
+      margin-top:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      color: rgba(255,255,255,.82);
+      font-size:13px;
+    }
+    .carouselMeta .left{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.88);
+      font-size:12px;
+      letter-spacing:.3px;
+      white-space:nowrap;
+    }
+    .chip .spark{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--gold);
+      box-shadow: 0 0 14px rgba(237,187,0,.65);
+    }
+    .who{
+      margin-top:10px;
       font-size:14px;
       color: rgba(255,255,255,.78);
       letter-spacing:.4px;
+      text-align:center;
     }
 
-    /* Confetti */
-    .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-    .confetti i{
-      position:absolute;
-      top:-12%;
-      border-radius:3px;
-      opacity:.95;
-      transform: rotate(12deg);
-      animation: fall linear forwards;
-    }
-    @keyframes fall{
-      to{ transform: translateY(130vh) rotate(520deg); opacity:.9; }
-    }
+    /* Mode switching */
+    body.mode-1 .screens{ grid-template-columns: 1fr; }
+    body.mode-1 .screen2{ display:none; }
+    body.mode-2 .screens{ grid-template-columns: 1fr; }
+    body.mode-2 .screen1{ display:none; }
 
-    footer{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      color: rgba(255,255,255,.65);
-      font-size:12px;
-      padding:0 4px;
+    @media (max-width: 1100px){
+      .screens{ grid-template-columns: 1fr; }
+      .screen2{ display:none; }
+      body.mode-2 .screen2{ display:block; }
+      body.mode-2 .screen1{ display:none; }
     }
-    .hint{ display:flex; align-items:center; gap:10px; }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <img class="crest" src="assets/logo.png" alt="FC Barcelona" />
-        <div>
-          <h1>Printing Lab · Ready for Pickup</h1>
-          <p class="sub">FC Barcelona · Signage</p>
-        </div>
-      </div>
-
-      <div class="rightMeta">
-        <div class="pill" title="Estado de conexión (demo)">
-          <span style="display:flex;align-items:center;gap:10px;">
-            <span class="dot"></span>
-            <span>LIVE</span>
-          </span>
-          <span id="clock"></span>
-        </div>
-        <div class="btn" id="toggleSound">🔊 Activar sonido</div>
-      </div>
-    </header>
-
-    <main>
-      <!-- TABLE -->
-      <section class="panel">
-        <div class="panelHeader">
-          <div>
-            <h2>Pedidos listos para recoger</h2>
-            <p>Se anuncian automáticamente al pasar a <b>Ready for pickup</b>.</p>
-          </div>
-          <div style="text-align:right">
-            <p class="label">Último anuncio</p>
-            <p style="margin:0;font-weight:700" id="lastAnnounce">—</p>
-          </div>
-        </div>
-
-        <div style="height:calc(100% - 64px); overflow:hidden;">
-          <table>
-            <thead>
-              <tr>
-                <th style="width:16%">Nº Order</th>
-                <th style="width:34%">Name</th>
-                <th style="width:16%">Number</th>
-                <th style="width:34%">Status</th>
-              </tr>
-            </thead>
-            <tbody id="rows"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- CALLOUT -->
-      <aside class="panel callout">
-        <div class="panelHeader">
-          <div>
-            <h2>Now serving</h2>
-            <p>El siguiente en recoger</p>
-          </div>
-        </div>
-
-        <div class="calloutBody">
-          <div class="nowServing">
-            <div class="label">Order</div>
-            <div class="bigNumber" id="nowOrder">—</div>
-
-            <div class="label">Name</div>
-            <div class="name" id="nowName">—</div>
-
-            <div class="label">Number</div>
-            <div class="number" id="nowNumber">—</div>
-
-            <div class="label">Status</div>
-            <div>
-              <span class="status ready"><span class="miniDot"></span> Ready for pickup</span>
-            </div>
-          </div>
-
-          <div class="nowServing">
-            <div class="label">Siguiente refresco</div>
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-              <div style="font-weight:800;letter-spacing:.6px" id="nextRefresh">—</div>
-              <div style="color:var(--muted);font-size:12px;">(simulado)</div>
-            </div>
-            <div style="color:var(--muted);font-size:12px;line-height:1.4;">
-              En producción: sustituye este polling por <b>fetch()</b> a tu API real / SSE / WebSocket.
-            </div>
-          </div>
-        </div>
-      </aside>
-    </main>
-
-    <footer>
-      <div class="hint">
-        <span style="opacity:.85">⚽</span>
-        <span>Tip signage: pantalla completa, sin scroll, contenido cacheable.</span>
-      </div>
-      <div style="opacity:.75">FCB · Demo · v1.7</div>
-    </footer>
-  </div>
-
-  <!-- GOAL OVERLAY -->
-  <div class="goalOverlay" id="overlay" role="dialog" aria-modal="true" aria-label="New ready order announcement">
-    <div class="goalCard">
-      <div class="confetti" id="confetti"></div>
-
-      <div class="goalTop">
-        <div class="tag"><span class="spark"></span> Ready for pickup</div>
-        <img class="goalCrest" src="assets/logo.png" alt="FC Barcelona" />
-      </div>
-
-      <div class="goalMain">
-        <div class="goal">GOOOAL!</div>
-        <div class="member">NEW MEMBER TO THE CLUB</div>
-
-        <div class="jerseyFrame" id="jerseyFrame">
-          <img id="jerseyImg" class="jerseyImg" alt="Jersey render" />
-        </div>
-
-        <div class="who" id="announceWho">—</div>
+  <div class="topbar">
+    <div class="brand">
+      <img class="crest" src="assets/logo.png" alt="FC Barcelona" />
+      <div>
+        <h1>Printing Lab · Dual Signage</h1>
+        <p class="sub">FC Barcelona · Screen 1 + Screen 2</p>
       </div>
     </div>
+
+    <div class="rightMeta">
+      <div class="modes" aria-label="Screen modes">
+        <div class="mode" id="modeDual">DUAL</div>
+        <div class="mode" id="mode1">SCREEN 1</div>
+        <div class="mode" id="mode2">SCREEN 2</div>
+      </div>
+
+      <div class="pill" title="Estado de conexión (demo)">
+        <span style="display:flex;align-items:center;gap:10px;">
+          <span class="dot"></span>
+          <span>LIVE</span>
+        </span>
+        <span id="clock"></span>
+      </div>
+      <div class="btn" id="toggleSound">🔊 Activar sonido</div>
+    </div>
+  </div>
+
+  <div class="screens">
+    <!-- SCREEN 1 -->
+    <section class="screen screen1">
+      <div class="screenHeader">
+        <div class="left">
+          <span class="screenBadge"></span>
+          <span class="screenTitle">SCREEN 1</span>
+          <span style="opacity:.65">· Orders + Now serving</span>
+        </div>
+        <div style="opacity:.7">v3.0</div>
+      </div>
+      <div class="screenBody">
+        <div class="s1">
+          <div class="s1Top">
+            <!-- TABLE -->
+            <div class="panel" style="min-height:0;">
+              <div class="panelHeader">
+                <div>
+                  <h2>Pedidos</h2>
+                  <p>Listado operativo</p>
+                </div>
+                <div style="text-align:right">
+                  <p class="label">Último anuncio</p>
+                  <p style="margin:0;font-weight:700" id="lastAnnounce">—</p>
+                </div>
+              </div>
+
+              <div style="height:calc(100% - 64px); overflow:hidden;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:20%">Nº Order</th>
+                      <th style="width:25%">Items</th>
+                      <th style="width:55%">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rows"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- NOW SERVING -->
+            <div class="panel">
+              <div class="panelHeader">
+                <div>
+                  <h2>Now serving</h2>
+                  <p>Siguiente pedido a recoger</p>
+                </div>
+              </div>
+
+              <div class="calloutBody">
+                <div class="nowServing">
+                  <div class="label">Order</div>
+                  <div class="bigNumber" id="nowOrder">—</div>
+
+                  <div class="label">Personalized items</div>
+                  <div class="desc"><b id="nowCount">—</b> prendas personalizadas</div>
+
+                  <div class="label">Status</div>
+                  <div>
+                    <span class="status ready"><span class="miniDot"></span> Ready for pickup</span>
+                  </div>
+
+                  <div class="label">Preview</div>
+                  <div class="desc" id="nowPreview">—</div>
+                </div>
+
+                <div class="nowServing">
+                  <div class="label">Siguiente refresco</div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                    <div style="font-weight:800;letter-spacing:.6px" id="nextRefresh">—</div>
+                    <div style="color:var(--muted);font-size:12px;">(simulado)</div>
+                  </div>
+                  <div style="color:var(--muted);font-size:12px;line-height:1.4;">
+                    Producción: sustituir por API real / SSE / WebSocket.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- small footer inside screen 1 -->
+          <div class="panel" style="padding:14px 16px; border-radius:18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;color:rgba(255,255,255,.72);font-size:12px;">
+              <div>Operativa · Estado en amarillo = listo</div>
+              <div>FCB · Signage</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2 -->
+    <section class="screen screen2">
+      <div class="screenHeader">
+        <div class="left">
+          <span class="screenBadge" style="background:rgba(237,187,0,.55); box-shadow:0 0 18px rgba(237,187,0,.35)"></span>
+          <span class="screenTitle">SCREEN 2</span>
+          <span style="opacity:.65">· Experience + Last ready order</span>
+        </div>
+        <div style="opacity:.7">GOAL</div>
+      </div>
+
+      <div class="screenBody">
+        <div class="s2">
+          <!-- Always-on detail header -->
+          <div class="hero">
+            <div class="heroLeft">
+              <div class="heroTitle">Último pedido preparado</div>
+              <div class="heroOrder" id="s2Order">—</div>
+              <div class="heroMeta"><span id="s2Items">—</span> items · <span style="color:rgba(237,187,0,.9);font-weight:800">Ready for pickup</span></div>
+            </div>
+            <img class="heroCrest" src="assets/logo.png" alt="FC Barcelona" />
+          </div>
+
+          <!-- Goal stage (overlay happens here) -->
+          <div class="goalStage">
+            <!-- idle background message -->
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:22px; color:rgba(255,255,255,.70); z-index:1;">
+              <div>
+                <div style="font-size:18px; font-weight:900; letter-spacing:1px;">FC BARCELONA</div>
+                <div style="margin-top:8px; font-size:14px; line-height:1.4;">
+                  Pantalla experiencial · aquí aparece el <b>GOAL</b> cuando un pedido queda listo.
+                </div>
+                <div style="margin-top:12px; font-size:12px; opacity:.8;">
+                  Tip: abre este mismo site con <b>?screen=2</b> en la TV de la zona pickup.
+                </div>
+              </div>
+            </div>
+
+            <!-- overlay -->
+            <div class="goalOverlay" id="overlayS2" role="dialog" aria-modal="true">
+              <div class="goalCard">
+                <div class="confetti" id="confetti"></div>
+
+                <div class="goalTop">
+                  <div class="tag"><span class="spark"></span> Ready for pickup</div>
+                  <img class="heroCrest" src="assets/logo.png" alt="FC Barcelona" style="width:44px;height:44px;" />
+                </div>
+
+                <div class="goalMain">
+                  <div class="goal">GOOOAL!</div>
+                  <div class="member">ORDER READY FOR PICKUP</div>
+
+                  <div class="carouselWrap">
+                    <div class="carouselStage">
+                      <div class="carouselTrack">
+                        <img id="imgA" class="carouselImg" alt="Jersey A" />
+                        <img id="imgB" class="carouselImg" alt="Jersey B" style="opacity:0" />
+                      </div>
+                    </div>
+
+                    <div class="dots" id="dots"></div>
+
+                    <div class="carouselMeta">
+                      <div class="left">
+                        <span class="chip"><span class="spark"></span> Order <b id="goalOrder">—</b></span>
+                        <span class="chip">Item <b id="goalItemIdx">—</b>/<b id="goalItemTotal">—</b></span>
+                        <span class="chip">Jersey <b id="goalItemLabel">—</b></span>
+                      </div>
+                      <div style="opacity:.85" id="goalItemsCount">— items</div>
+                    </div>
+
+                    <div class="who" id="announceWho">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /overlay -->
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- AUDIO (7 seconds) -->
@@ -483,12 +781,21 @@
      *****************/
     const POLL_EVERY_SEC = 6;
     const GOAL_AUDIO_DURATION_MS = 7000;
-    const ANNOUNCE_MS = 7500;
+
+    // Experience duration
+    const ANNOUNCE_MS = 9800;
+
+    // Queue pacing
     const MIN_GAP_BETWEEN_GOALS_MS = 1500;
+
+    // Carousel
+    const CAROUSEL_INTERVAL_MS = 2800;
+    const AUTOPAUSE_LAST_MS = 2000;
+    const TRANSITION_MS = 600;
+    const HOLD_BACK_TO_FIRST_MS = 900;
 
     /*****************
      * Allowed jersey assets (ONLY these)
-     * key = `${name}|${number}` -> filename
      *****************/
     const ALLOWED_ASSETS = {
       "ALB GARRIGA|7": "alb-garriga-7.png",
@@ -509,116 +816,163 @@
     function normalizeName(n){
       return (n || "")
         .toUpperCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g,""); // quita acentos (JESÚS -> JESUS)
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
     }
-
     function assetFor(name, number){
       const key = `${normalizeName(name)}|${number}`;
       const file = ALLOWED_ASSETS[key];
       return file ? `assets/jerseys/${file}` : null;
     }
+    function labelFor(item){
+      return `${normalizeName(item.name)} ${item.number}`;
+    }
 
     /*****************
-     * Demo data: ONLY players with assets
-     * (no se crean pedidos nuevos)
+     * Orders model
      *****************/
-    const INITIAL = [
-      { order: 135037, name: "JAUME",        number: 8,  status: "Ready for pickup", ready: true,  announced: true },
-      { order: 147765, name: "RAPHINHA",     number: 11, status: "Ready for pickup", ready: true,  announced: true },
+    const INITIAL_ORDERS = [
+      { order:135037, items:[{name:"JAUME",number:8}], status:"Ready for pickup", ready:true,  announced:true },
+      { order:147765, items:[{name:"RAPHINHA",number:11}], status:"Ready for pickup", ready:true,  announced:true },
 
-      { order: 149102, name: "PEDRI",        number: 8,  status: "Printing",       ready: false, announced: false },
-      { order: 149211, name: "GAVI",         number: 6,  status: "Picking Name",   ready: false, announced: false },
-      { order: 149254, name: "LAMINE",       number: 10, status: "Plottering",     ready: false, announced: false },
-      { order: 149310, name: "ARAUJO",       number: 4,  status: "Picking Number", ready: false, announced: false },
-      { order: 149388, name: "BALDE",        number: 3,  status: "Printing",       ready: false, announced: false },
-      { order: 149401, name: "FERRAN",       number: 7,  status: "Plottering",     ready: false, announced: false },
-      { order: 149512, name: "TER STEGEN",   number: 1,  status: "Printing",       ready: false, announced: false },
-      { order: 149640, name: "KOUNDE",       number: 24, status: "Picking Name",   ready: false, announced: false },
-      { order: 149777, name: "ALB GARRIGA",  number: 7,  status: "Printing",       ready: false, announced: false },
-      { order: 159010, name: "JESÚS MILLA",  number: 10, status: "Printing",       ready: false, announced: false }
+      { order:149102, items:[{name:"PEDRI",number:8}], status:"Printing", ready:false, announced:false },
+      { order:149211, items:[{name:"GAVI",number:6}], status:"Picking Name", ready:false, announced:false },
+      { order:149254, items:[{name:"LAMINE",number:10}], status:"Plottering", ready:false, announced:false },
+      { order:149310, items:[{name:"ARAUJO",number:4}], status:"Picking Number", ready:false, announced:false },
+      { order:149388, items:[{name:"BALDE",number:3}], status:"Printing", ready:false, announced:false },
+      { order:149401, items:[{name:"FERRAN",number:7}], status:"Plottering", ready:false, announced:false },
+      { order:149512, items:[{name:"TER STEGEN",number:1}], status:"Printing", ready:false, announced:false },
+      { order:149640, items:[{name:"KOUNDE",number:24}], status:"Picking Name", ready:false, announced:false },
+
+      // Pedido multi-jersey (demo)
+      {
+        order:159010,
+        items:[
+          { name:"JESÚS MILLA", number:10 },
+          { name:"JESÚS MILLA", number:21 },
+          { name:"ALB GARRIGA", number:7 }
+        ],
+        status:"Printing",
+        ready:false,
+        announced:false
+      }
     ];
 
-    // Forced announcements (exactly your two)
     const FORCED_READY_SEQUENCE = [
-      { delayMs: 2500,  order: 159010, name: "JESÚS MILLA",   number: 10 },
-      { delayMs: 11500, order: 159011, name: "ALB GARRIGA",   number: 7 }
+      { delayMs: 2500, order: 159010 }
     ];
 
     /*****************
      * State
      *****************/
-    let items = structuredClone(INITIAL);
+    let orders = structuredClone(INITIAL_ORDERS);
     let soundEnabled = false;
     let goalAudioTimeout = null;
 
-    // Queue/lock for announcements
     let isAnnouncing = false;
     let announceQueue = [];
     let lastAnnounceTs = 0;
+
+    // Carousel runtime
+    let carouselTimer = null;
+    let carouselIdx = 0;
+    let carouselItems = [];
+    let frontIsA = true;
+    let overlayEndsAt = 0;
+    let completedOneLoop = false;
+
+    // last ready for Screen 2
+    let lastReadyOrder = null;
 
     /*****************
      * DOM
      *****************/
     const rowsEl = document.getElementById("rows");
     const nowOrderEl = document.getElementById("nowOrder");
-    const nowNameEl = document.getElementById("nowName");
-    const nowNumberEl = document.getElementById("nowNumber");
+    const nowCountEl = document.getElementById("nowCount");
+    const nowPreviewEl = document.getElementById("nowPreview");
+
     const lastAnnounceEl = document.getElementById("lastAnnounce");
-    const overlayEl = document.getElementById("overlay");
-    const announceWhoEl = document.getElementById("announceWho");
+    const overlayEl = document.getElementById("overlayS2");
     const confettiEl = document.getElementById("confetti");
     const clockEl = document.getElementById("clock");
     const nextRefreshEl = document.getElementById("nextRefresh");
+
     const audioEl = document.getElementById("goalChant");
-    const jerseyImgEl = document.getElementById("jerseyImg");
-    const jerseyFrameEl = document.getElementById("jerseyFrame");
+
+    const imgA = document.getElementById("imgA");
+    const imgB = document.getElementById("imgB");
+
+    const goalOrderEl = document.getElementById("goalOrder");
+    const goalItemIdxEl = document.getElementById("goalItemIdx");
+    const goalItemTotalEl = document.getElementById("goalItemTotal");
+    const goalItemLabelEl = document.getElementById("goalItemLabel");
+    const goalItemsCountEl = document.getElementById("goalItemsCount");
+    const announceWhoEl = document.getElementById("announceWho");
+
+    const dotsEl = document.getElementById("dots");
+
+    const s2OrderEl = document.getElementById("s2Order");
+    const s2ItemsEl = document.getElementById("s2Items");
+
+    const modeDualBtn = document.getElementById("modeDual");
+    const mode1Btn = document.getElementById("mode1");
+    const mode2Btn = document.getElementById("mode2");
 
     function pad2(n){ return String(n).padStart(2,"0"); }
     function fmtTime(d){ return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; }
 
+    function hasAllAssets(order){
+      return order.items.every(it => !!assetFor(it.name, it.number));
+    }
+
+    function updateScreen2LastReady(){
+      if(!lastReadyOrder){
+        s2OrderEl.textContent = "—";
+        s2ItemsEl.textContent = "—";
+        return;
+      }
+      s2OrderEl.textContent = `#${lastReadyOrder.order}`;
+      s2ItemsEl.textContent = `${lastReadyOrder.items.length}`;
+    }
+
     function render(){
-      const sorted = [...items].sort((a,b) => (b.ready - a.ready) || (a.order - b.order));
+      const sorted = [...orders].sort((a,b) => (b.ready - a.ready) || (a.order - b.order));
 
       const firstReady = sorted.find(x => x.ready);
       nowOrderEl.textContent = firstReady ? `#${firstReady.order}` : "—";
-      nowNameEl.textContent = firstReady ? firstReady.name : "—";
-      nowNumberEl.textContent = firstReady ? firstReady.number : "—";
+      nowCountEl.textContent = firstReady ? `${firstReady.items.length}` : "—";
+      nowPreviewEl.textContent = firstReady ? firstReady.items.map(labelFor).join(" · ") : "—";
 
       rowsEl.innerHTML = "";
-      for(const it of sorted.slice(0, 12)){
+      for(const o of sorted.slice(0, 12)){
         const tr = document.createElement("tr");
-        if(it._highlight) tr.classList.add("highlightRow");
+        if(o._highlight) tr.classList.add("highlightRow");
 
         const tdOrder = document.createElement("td");
-        tdOrder.textContent = it.order;
+        tdOrder.style.fontWeight = "900";
+        tdOrder.style.letterSpacing = ".8px";
+        tdOrder.textContent = `#${o.order}`;
 
-        const tdName = document.createElement("td");
-        tdName.style.fontWeight = "800";
-        tdName.style.letterSpacing = ".8px";
-        tdName.textContent = it.name;
-
-        const tdNumber = document.createElement("td");
-        tdNumber.style.fontWeight = "900";
-        tdNumber.textContent = it.number;
+        const tdCount = document.createElement("td");
+        tdCount.innerHTML = `<span class="qtyPill"><b>${o.items.length}</b> items</span>`;
 
         const tdStatus = document.createElement("td");
         const pill = document.createElement("span");
-        pill.className = "status" + (it.ready ? " ready" : "");
-        pill.innerHTML = `<span class="miniDot"></span> ${it.ready ? "Ready for pickup" : it.status}`;
+        pill.className = "status" + (o.ready ? " ready" : "");
+        const st = o.ready ? "Ready for pickup" : o.status;
+        pill.innerHTML = `<span class="miniDot"></span> ${st}`;
         tdStatus.appendChild(pill);
 
         tr.appendChild(tdOrder);
-        tr.appendChild(tdName);
-        tr.appendChild(tdNumber);
+        tr.appendChild(tdCount);
         tr.appendChild(tdStatus);
-
         rowsEl.appendChild(tr);
       }
+
+      updateScreen2LastReady();
     }
 
-    function setClock(){
-      clockEl.textContent = fmtTime(new Date());
-    }
+    function setClock(){ clockEl.textContent = fmtTime(new Date()); }
 
     function setNextRefresh(seconds){
       const now = new Date();
@@ -630,26 +984,21 @@
       confettiEl.innerHTML = "";
       const colors = ["#EDBB00", "#FFFFFF", "#A50044", "#004D98"];
       const count = 62;
-
       for(let i=0;i<count;i++){
         const c = document.createElement("i");
         c.style.left = (Math.random()*100) + "%";
         c.style.animationDelay = (Math.random()*0.25) + "s";
         c.style.animationDuration = (1.9 + Math.random()*1.3) + "s";
         c.style.background = colors[(Math.random()*colors.length)|0];
-
         const w = 8 + Math.random()*9;
         const h = 14 + Math.random()*18;
         c.style.width = w + "px";
         c.style.height = h + "px";
-
         confettiEl.appendChild(c);
       }
     }
 
-    /* ================
-       Audio hard-stop
-    ================= */
+    /* Audio hard-stop */
     function stopAudioHard(){
       try{
         if(goalAudioTimeout){
@@ -660,43 +1009,170 @@
         audioEl.currentTime = 0;
       }catch(e){}
     }
-
     function playGoalChant7s(){
       if(!soundEnabled) return;
-
-      stopAudioHard(); // no solapamientos
-
+      stopAudioHard();
       try{
         audioEl.volume = 1.0;
         audioEl.play().catch(()=>{});
-
-        goalAudioTimeout = setTimeout(() => {
-          stopAudioHard();
-        }, GOAL_AUDIO_DURATION_MS);
+        goalAudioTimeout = setTimeout(() => stopAudioHard(), GOAL_AUDIO_DURATION_MS);
       }catch(e){}
     }
 
-    /* ================
-       Announcement queue
-    ================= */
-    function enqueueAnnounce(item){
-      const src = assetFor(item.name, item.number);
-      if(!src) return; // si no hay asset, no hay GOAL
+    /* Progress dots */
+    function renderDots(total, activeIdx){
+      dotsEl.innerHTML = "";
+      if(total <= 1) return;
+      for(let i=0;i<total;i++){
+        const d = document.createElement("span");
+        d.className = "dotItem" + (i === activeIdx ? " active" : "");
+        dotsEl.appendChild(d);
+      }
+    }
+    function setActiveDot(activeIdx){
+      const dots = dotsEl.querySelectorAll(".dotItem");
+      dots.forEach((d,i)=> {
+        if(i === activeIdx) d.classList.add("active");
+        else d.classList.remove("active");
+      });
+    }
 
-      // si ya está en cola, no lo repitas
-      const alreadyQueued = announceQueue.some(x => x.order === item.order);
-      if(isAnnouncing){
-        if(!alreadyQueued) announceQueue.push(item);
+    /* Carousel control (slide) */
+    function stopCarousel(){
+      if(carouselTimer){
+        clearInterval(carouselTimer);
+        carouselTimer = null;
+      }
+      carouselItems = [];
+      carouselIdx = 0;
+      frontIsA = true;
+      completedOneLoop = false;
+
+      imgA.className = "carouselImg";
+      imgB.className = "carouselImg";
+      imgB.style.opacity = 0;
+
+      dotsEl.innerHTML = "";
+    }
+
+    function setCarouselMeta(order, idx){
+      goalOrderEl.textContent = `#${order.order}`;
+      goalItemIdxEl.textContent = `${idx+1}`;
+      goalItemTotalEl.textContent = `${carouselItems.length}`;
+      goalItemLabelEl.textContent = labelFor(carouselItems[idx]);
+      goalItemsCountEl.textContent = `${order.items.length} items`;
+      setActiveDot(idx);
+    }
+
+    function remainingOverlayMs(){
+      return Math.max(0, overlayEndsAt - Date.now());
+    }
+
+    function slideTo(order, nextIdx){
+      if(remainingOverlayMs() < AUTOPAUSE_LAST_MS + TRANSITION_MS) {
+        if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
         return;
       }
 
-      runAnnounce(item);
+      const nextItem = carouselItems[nextIdx];
+      const src = assetFor(nextItem.name, nextItem.number);
+      if(!src) return;
+
+      const front = frontIsA ? imgA : imgB;
+      const back  = frontIsA ? imgB : imgA;
+
+      back.src = src + `?v=${Date.now()}`;
+      back.className = "carouselImg inRight";
+      back.style.opacity = 1;
+
+      requestAnimationFrame(() => {
+        front.className = "carouselImg outLeft";
+        back.className = "carouselImg inToCenter";
+      });
+
+      setTimeout(() => {
+        front.style.opacity = 0;
+        front.className = "carouselImg";
+        frontIsA = !frontIsA;
+      }, TRANSITION_MS);
+
+      setCarouselMeta(order, nextIdx);
     }
 
-    function runAnnounce(item){
+    function startCarousel(order){
+      stopCarousel();
+      carouselItems = order.items.slice();
+      carouselIdx = 0;
+      completedOneLoop = false;
+
+      overlayEndsAt = Date.now() + ANNOUNCE_MS;
+
+      const first = carouselItems[0];
+      imgA.src = assetFor(first.name, first.number) + `?v=${Date.now()}`;
+      imgA.style.opacity = 1;
+      imgA.className = "carouselImg";
+      imgB.style.opacity = 0;
+
+      renderDots(carouselItems.length, 0);
+      setCarouselMeta(order, 0);
+
+      if(carouselItems.length <= 1) return;
+
+      carouselTimer = setInterval(() => {
+        const lastIdx = carouselItems.length - 1;
+
+        if(completedOneLoop){
+          if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
+          return;
+        }
+
+        if(remainingOverlayMs() < AUTOPAUSE_LAST_MS){
+          if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
+          return;
+        }
+
+        if(carouselIdx < lastIdx){
+          carouselIdx++;
+          slideTo(order, carouselIdx);
+          return;
+        }
+
+        // last -> pause -> back to 0 -> HOLD
+        if(remainingOverlayMs() < AUTOPAUSE_LAST_MS + TRANSITION_MS + HOLD_BACK_TO_FIRST_MS){
+          if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
+          return;
+        }
+
+        setTimeout(() => {
+          if(remainingOverlayMs() < AUTOPAUSE_LAST_MS + TRANSITION_MS){
+            if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
+            return;
+          }
+          carouselIdx = 0;
+          slideTo(order, 0);
+          completedOneLoop = true;
+          if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
+        }, HOLD_BACK_TO_FIRST_MS);
+
+      }, CAROUSEL_INTERVAL_MS);
+    }
+
+    /* Announcement queue */
+    function enqueueAnnounce(order){
+      if(!order.ready) return;
+      if(!hasAllAssets(order)) return;
+
+      const alreadyQueued = announceQueue.some(x => x.order === order.order);
+      if(isAnnouncing){
+        if(!alreadyQueued) announceQueue.push(order);
+        return;
+      }
+      runAnnounce(order);
+    }
+
+    function runAnnounce(order){
       isAnnouncing = true;
 
-      // cooldown mínimo entre GOALs
       const now = Date.now();
       const sinceLast = now - lastAnnounceTs;
       const wait = Math.max(0, MIN_GAP_BETWEEN_GOALS_MS - sinceLast);
@@ -704,54 +1180,37 @@
       setTimeout(() => {
         lastAnnounceTs = Date.now();
 
-        // reset fuerte por si venimos de una animación anterior
         stopAudioHard();
+        stopCarousel();
         overlayEl.classList.remove("show");
 
-        // highlight row
-        items.forEach(x => x._highlight = false);
-        item._highlight = true;
-        render();
+        orders.forEach(o => o._highlight = false);
+        order._highlight = true;
 
+        // Update last ready on Screen 2
+        lastReadyOrder = order;
+
+        render();
         lastAnnounceEl.textContent = fmtTime(new Date());
 
-        const src = assetFor(item.name, item.number);
-        if(!src){
-          // safety
-          isAnnouncing = false;
-          const next = announceQueue.shift();
-          if(next) runAnnounce(next);
-          return;
-        }
-
-        jerseyFrameEl.style.display = "block";
-        jerseyImgEl.style.display = "block";
-        jerseyImgEl.src = src + `?v=${Date.now()}`;
-
-        // re-trigger spin even with cached images
-        jerseyImgEl.style.animation = "none";
-        jerseyImgEl.offsetHeight;
-        jerseyImgEl.style.animation = "";
-
-        announceWhoEl.innerHTML = `Pedido <b>#${item.order}</b> · <b>${item.name}</b> <b>${item.number}</b> — ¡puede pasar a recogerlo!`;
-
         buildConfetti();
+        announceWhoEl.innerHTML =
+          `Pedido <b>#${order.order}</b> · <b>${order.items.length}</b> prendas personalizadas — ¡puede pasar a recogerlo!`;
 
-        // show overlay on top
         overlayEl.classList.add("show");
 
-        // audio
+        startCarousel(order);
         playGoalChant7s();
 
-        // close
         setTimeout(() => {
           stopAudioHard();
+          stopCarousel();
           overlayEl.classList.remove("show");
-          item._highlight = false;
+
+          order._highlight = false;
           render();
 
           isAnnouncing = false;
-
           const next = announceQueue.shift();
           if(next) runAnnounce(next);
         }, ANNOUNCE_MS);
@@ -759,62 +1218,83 @@
       }, wait);
     }
 
-    /*****************
-     * Polling simulation (NO new orders, NO random names)
-     *****************/
+    /* Polling simulation */
     function simulatePoll(){
-      // Si ya estamos anunciando, evitamos generar más presión; aún así la cola lo soporta
-      const pending = items.filter(x => !x.ready);
-      if(!pending.length){
-        render();
-        return;
-      }
+      const pending = orders.filter(o => !o.ready);
+      if(!pending.length){ render(); return; }
 
       const pick = pending[(Math.random()*pending.length)|0];
       pick.ready = true;
       pick.status = "Ready for pickup";
 
-      const newlyReady = items
-        .filter(x => x.ready && !x.announced)
-        .sort((a,b) => a.order - b.order);
-
+      const newlyReady = orders.filter(o => o.ready && !o.announced).sort((a,b)=>a.order-b.order);
       if(newlyReady.length){
-        const item = newlyReady[0];
-        item.announced = true;
-
-        // Only announce if asset exists
-        const src = assetFor(item.name, item.number);
-        if(src) enqueueAnnounce(item);
-        else render();
+        const o = newlyReady[0];
+        o.announced = true;
+        enqueueAnnounce(o);
       } else {
         render();
       }
     }
 
-    function forceReady(order, name, number){
-      // Upsert into list
-      let existing = items.find(x => x.order === order);
-      if(!existing){
-        existing = { order, name, number, status: "Ready for pickup", ready: true, announced: false };
-        items.unshift(existing);
+    function forceReady(orderNumber){
+      const o = orders.find(x => x.order === orderNumber);
+      if(!o) return;
+      o.ready = true;
+      o.status = "Ready for pickup";
+      o.announced = true;
+      enqueueAnnounce(o);
+    }
+
+    /*****************
+     * Screen mode (dual / 1 / 2)
+     *****************/
+    function setMode(mode){
+      document.body.classList.remove("mode-1","mode-2");
+      modeDualBtn.classList.remove("active");
+      mode1Btn.classList.remove("active");
+      mode2Btn.classList.remove("active");
+
+      if(mode === "1"){
+        document.body.classList.add("mode-1");
+        mode1Btn.classList.add("active");
+      } else if(mode === "2"){
+        document.body.classList.add("mode-2");
+        mode2Btn.classList.add("active");
       } else {
-        existing.name = name;
-        existing.number = number;
-        existing.ready = true;
-        existing.status = "Ready for pickup";
-        existing.announced = false;
+        modeDualBtn.classList.add("active");
       }
 
-      setTimeout(() => {
-        existing.announced = true;
-        enqueueAnnounce(existing);
-      }, 80);
+      const url = new URL(window.location.href);
+      url.searchParams.set("screen", mode === "dual" ? "dual" : mode);
+      window.history.replaceState({}, "", url);
     }
+
+    function initModeFromUrl(){
+      const url = new URL(window.location.href);
+      const s = (url.searchParams.get("screen") || "dual").toLowerCase();
+      if(s === "1") setMode("1");
+      else if(s === "2") setMode("2");
+      else setMode("dual");
+    }
+
+    modeDualBtn.addEventListener("click", () => setMode("dual"));
+    mode1Btn.addEventListener("click", () => setMode("1"));
+    mode2Btn.addEventListener("click", () => setMode("2"));
+
+    // keyboard shortcuts: 0=dual, 1=screen1, 2=screen2
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "0") setMode("dual");
+      if(e.key === "1") setMode("1");
+      if(e.key === "2") setMode("2");
+    });
 
     /*****************
      * Boot
      *****************/
     render();
+    initModeFromUrl();
+
     setClock();
     setNextRefresh(POLL_EVERY_SEC);
     setInterval(setClock, 1000);
@@ -829,27 +1309,26 @@
       setNextRefresh(countdown);
     }, 1000);
 
+    // Click on overlay to close
     overlayEl.addEventListener("click", () => {
-      // cerrar manualmente también corta audio y desbloquea cola
       stopAudioHard();
+      stopCarousel();
       overlayEl.classList.remove("show");
     });
 
     document.getElementById("toggleSound").addEventListener("click", (e) => {
       soundEnabled = !soundEnabled;
       e.currentTarget.textContent = soundEnabled ? "🔇 Desactivar sonido" : "🔊 Activar sonido";
-
-      // Unlock audio pipeline
       if(soundEnabled){
         audioEl.play().then(()=>audioEl.pause()).catch(()=>{});
-      }else{
+      } else {
         stopAudioHard();
       }
     });
 
-    // Forced: your two announcements
+    // forced demo (multi-jersey first)
     for(const f of FORCED_READY_SEQUENCE){
-      setTimeout(() => forceReady(f.order, f.name, f.number), f.delayMs);
+      setTimeout(() => forceReady(f.order), f.delayMs);
     }
   </script>
 </body>
