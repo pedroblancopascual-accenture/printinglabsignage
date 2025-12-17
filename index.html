@@ -19,7 +19,11 @@
     }
 
     *{ box-sizing:border-box; }
-    html,body{ height:100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#050A12; color:var(--text); overflow:hidden;}
+    html,body{
+      height:100%; margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:#050A12; color:var(--text); overflow:hidden;
+    }
 
     body::before{
       content:"";
@@ -72,8 +76,8 @@
     }
 
     .crest{
-      width:60px;
-      height:60px;
+      width:34px;
+      height:34px;
       object-fit:contain;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,.35));
     }
@@ -91,7 +95,7 @@
       font-size:12px;
       color:var(--muted);
       display:flex; gap:10px; align-items:center;
-      min-width: 190px;
+      min-width: 210px;
       justify-content:space-between;
     }
     .dot{
@@ -154,6 +158,7 @@
       font-size:16px;
     }
 
+    /* READY = amarillo Barça */
     .status{
       display:inline-flex; align-items:center; gap:10px;
       padding:8px 12px;
@@ -162,11 +167,13 @@
       background: rgba(0,0,0,.18);
       color:rgba(255,255,255,.86);
       font-size:13px;
+      white-space:nowrap;
     }
     .status.ready{
-      border-color: rgba(237,187,0,.45);
-      background: rgba(237,187,0,.12);
-      color: rgba(255,255,255,.95);
+      border-color: rgba(237,187,0,.55);
+      background: rgba(237,187,0,.14);
+      color: rgba(255,255,255,.96);
+      box-shadow: 0 0 0 1px rgba(237,187,0,.10) inset;
     }
     .status .miniDot{ width:8px; height:8px; border-radius:50%; background: rgba(255,255,255,.35); }
     .status.ready .miniDot{ background: var(--gold); box-shadow: 0 0 14px rgba(237,187,0,.65); }
@@ -200,18 +207,20 @@
       gap:10px;
     }
     .name{ font-size:26px; font-weight:800; letter-spacing:1px; }
+    .number{ font-size:20px; font-weight:900; letter-spacing:1px; opacity:.95; }
 
     /* GOAL overlay */
     .goalOverlay{
       position:fixed; inset:0;
       display:none;
       align-items:center; justify-content:center;
-      z-index:50;
+      z-index:9999; /* asegura primer plano */
       background: radial-gradient(circle at 50% 40%, rgba(0,0,0,.25), rgba(0,0,0,.82));
     }
     .goalOverlay.show{ display:flex; }
+
     .goalCard{
-      width:min(980px, 92vw);
+      width:min(1040px, 94vw);
       border-radius:30px;
       border:1px solid rgba(255,255,255,.14);
       background:
@@ -246,32 +255,68 @@
       background: var(--gold);
       box-shadow: 0 0 18px rgba(237,187,0,.8);
     }
-
     .goalCrest{
-      width:44px;
-      height:44px;
-      object-fit:contain;
+      width:44px; height:44px; object-fit:contain;
       opacity:.92;
       filter: drop-shadow(0 10px 28px rgba(0,0,0,.45));
     }
 
-    .goalMain{ padding: 10px 26px 26px 26px; display:grid; gap:10px; text-align:center; }
+    .goalMain{
+      padding: 8px 26px 26px 26px;
+      display:grid;
+      gap:14px;
+      text-align:center;
+    }
     .goalMain .goal{
       font-size:74px;
       font-weight:1000;
       letter-spacing: 2px;
       line-height:1;
       text-shadow: 0 14px 40px rgba(0,0,0,.35);
-      transform: translateY(8px);
       animation: chant 1.8s ease-in-out infinite;
     }
     @keyframes chant{
       0%,100%{ transform: translateY(6px) scale(1); }
       50%{ transform: translateY(0px) scale(1.02); }
     }
-    .goalMain .member{ font-size:22px; font-weight:800; letter-spacing:1px; opacity:.95; }
+    .goalMain .member{
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:1px;
+      opacity:.95;
+    }
+
+    /* Jersey asset + giro 360 */
+    .jerseyFrame{
+      perspective: 900px;
+      margin: 0 auto;
+      width:min(520px, 70vw);
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      padding:16px;
+    }
+    .jerseyImg{
+      width:100%;
+      height:auto;
+      display:block;
+      border-radius:16px;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      will-change: transform;
+    }
+    .goalOverlay.show .jerseyImg{
+      animation: spin360 1.45s ease-in-out 0.05s 1;
+    }
+    @keyframes spin360{
+      0%   { transform: rotateY(0deg)   scale(0.98); }
+      40%  { transform: rotateY(180deg) scale(1.03); }
+      100% { transform: rotateY(360deg) scale(1.00); }
+    }
+
     .goalMain .who{
-      margin-top:8px;
+      margin-top:4px;
       font-size:14px;
       color: rgba(255,255,255,.78);
       letter-spacing:.4px;
@@ -307,7 +352,6 @@
   <div class="wrap">
     <header>
       <div class="brand">
-        <!-- Escudo Barça -->
         <img class="crest" src="assets/logo.png" alt="FC Barcelona" />
         <div>
           <h1>Printing Lab · Ready for Pickup</h1>
@@ -345,9 +389,10 @@
           <table>
             <thead>
               <tr>
-                <th style="width:18%">Nº Order</th>
-                <th style="width:32%">Name</th>
-                <th style="width:50%">Status</th>
+                <th style="width:16%">Nº Order</th>
+                <th style="width:34%">Name</th>
+                <th style="width:16%">Number</th>
+                <th style="width:34%">Status</th>
               </tr>
             </thead>
             <tbody id="rows"></tbody>
@@ -368,8 +413,13 @@
           <div class="nowServing">
             <div class="label">Order</div>
             <div class="bigNumber" id="nowOrder">—</div>
+
             <div class="label">Name</div>
             <div class="name" id="nowName">—</div>
+
+            <div class="label">Number</div>
+            <div class="number" id="nowNumber">—</div>
+
             <div class="label">Status</div>
             <div>
               <span class="status ready"><span class="miniDot"></span> Ready for pickup</span>
@@ -383,7 +433,7 @@
               <div style="color:var(--muted);font-size:12px;">(simulado)</div>
             </div>
             <div style="color:var(--muted);font-size:12px;line-height:1.4;">
-              En producción: sustituye el polling simulado por <b>fetch()</b> a tu API real / SSE / WebSocket.
+              En producción: sustituye este polling por <b>fetch()</b> a tu API real / SSE / WebSocket.
             </div>
           </div>
         </div>
@@ -395,7 +445,7 @@
         <span style="opacity:.85">⚽</span>
         <span>Tip signage: pantalla completa, sin scroll, contenido cacheable.</span>
       </div>
-      <div style="opacity:.75">FCB · Demo · v1.1</div>
+      <div style="opacity:.75">FCB · Demo · v1.7</div>
     </footer>
   </div>
 
@@ -406,19 +456,23 @@
 
       <div class="goalTop">
         <div class="tag"><span class="spark"></span> Ready for pickup</div>
-        <!-- Escudo en overlay -->
         <img class="goalCrest" src="assets/logo.png" alt="FC Barcelona" />
       </div>
 
       <div class="goalMain">
         <div class="goal">GOOOAL!</div>
         <div class="member">NEW MEMBER TO THE CLUB</div>
+
+        <div class="jerseyFrame" id="jerseyFrame">
+          <img id="jerseyImg" class="jerseyImg" alt="Jersey render" />
+        </div>
+
         <div class="who" id="announceWho">—</div>
       </div>
     </div>
   </div>
 
-  <!-- AUDIO (se reproduce solo 7 segundos) -->
+  <!-- AUDIO (7 seconds) -->
   <audio id="goalChant" preload="auto">
     <source src="audio/FC_Barcelona_NEW_goal_song 25_26.mp3" type="audio/mpeg">
   </audio>
@@ -428,31 +482,66 @@
      * Config
      *****************/
     const POLL_EVERY_SEC = 6;
-    const GOAL_AUDIO_DURATION_MS = 7000; // 7s exactos
-    const ANNOUNCE_MS = 7500;            // overlay un pelín más largo
-
-    // demo: forzar entrada de los 2 nombres pedidos
-    const FORCED_READY_SEQUENCE = [
-      { delayMs: 2500,  order: 159010, name: "JESÚS MILLA" },
-      { delayMs: 11500, order: 159011, name: "ALBERT GARRIGA" }
-    ];
+    const GOAL_AUDIO_DURATION_MS = 7000;
+    const ANNOUNCE_MS = 7500;
+    const MIN_GAP_BETWEEN_GOALS_MS = 1500;
 
     /*****************
-     * Demo data
+     * Allowed jersey assets (ONLY these)
+     * key = `${name}|${number}` -> filename
+     *****************/
+    const ALLOWED_ASSETS = {
+      "ALB GARRIGA|7": "alb-garriga-7.png",
+      "ARAUJO|4": "araujo-4.png",
+      "BALDE|3": "balde-3.png",
+      "FERRAN|7": "ferran-7.png",
+      "GAVI|6": "gavi-6.png",
+      "JAUME|8": "jaume-8.png",
+      "JESUS MILLA|10": "jesus-milla-10.png",
+      "JESUS MILLA|21": "jesus-milla-21.png",
+      "KOUNDE|24": "kounde-24.png",
+      "LAMINE|10": "lamine-10.png",
+      "PEDRI|8": "pedri-8.png",
+      "RAPHINHA|11": "raphinha-11.png",
+      "TER STEGEN|1": "ter-stegen-1.png"
+    };
+
+    function normalizeName(n){
+      return (n || "")
+        .toUpperCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,""); // quita acentos (JESÚS -> JESUS)
+    }
+
+    function assetFor(name, number){
+      const key = `${normalizeName(name)}|${number}`;
+      const file = ALLOWED_ASSETS[key];
+      return file ? `assets/jerseys/${file}` : null;
+    }
+
+    /*****************
+     * Demo data: ONLY players with assets
+     * (no se crean pedidos nuevos)
      *****************/
     const INITIAL = [
-      { order: 135037, name: "JAUME",     status: "Ready for pickup", ready: true,  announced: true },
-      { order: 147765, name: "RAPHINHA",  status: "Ready for pickup", ready: true,  announced: true },
-      { order: 149102, name: "PEDRI",     status: "Printing",         ready: false, announced: false },
-      { order: 149211, name: "GAVI",      status: "Picking Name",     ready: false, announced: false },
-      { order: 149254, name: "LAMINE",    status: "Plottering",       ready: false, announced: false },
+      { order: 135037, name: "JAUME",        number: 8,  status: "Ready for pickup", ready: true,  announced: true },
+      { order: 147765, name: "RAPHINHA",     number: 11, status: "Ready for pickup", ready: true,  announced: true },
+
+      { order: 149102, name: "PEDRI",        number: 8,  status: "Printing",       ready: false, announced: false },
+      { order: 149211, name: "GAVI",         number: 6,  status: "Picking Name",   ready: false, announced: false },
+      { order: 149254, name: "LAMINE",       number: 10, status: "Plottering",     ready: false, announced: false },
+      { order: 149310, name: "ARAUJO",       number: 4,  status: "Picking Number", ready: false, announced: false },
+      { order: 149388, name: "BALDE",        number: 3,  status: "Printing",       ready: false, announced: false },
+      { order: 149401, name: "FERRAN",       number: 7,  status: "Plottering",     ready: false, announced: false },
+      { order: 149512, name: "TER STEGEN",   number: 1,  status: "Printing",       ready: false, announced: false },
+      { order: 149640, name: "KOUNDE",       number: 24, status: "Picking Name",   ready: false, announced: false },
+      { order: 149777, name: "ALB GARRIGA",  number: 7,  status: "Printing",       ready: false, announced: false },
+      { order: 159010, name: "JESÚS MILLA",  number: 10, status: "Printing",       ready: false, announced: false }
     ];
 
-    const DEMO_NAMES = [
-      "JESÚS MILLA",
-      "ALBERT GARRIGA",
-      "ARAUJO","BALDE","FERRAN","KOUNDÉ","DE JONG",
-      "CANCELO","LEWANDOWSKI","TER STEGEN","JOAO FELIX"
+    // Forced announcements (exactly your two)
+    const FORCED_READY_SEQUENCE = [
+      { delayMs: 2500,  order: 159010, name: "JESÚS MILLA",   number: 10 },
+      { delayMs: 11500, order: 159011, name: "ALB GARRIGA",   number: 7 }
     ];
 
     /*****************
@@ -462,12 +551,18 @@
     let soundEnabled = false;
     let goalAudioTimeout = null;
 
+    // Queue/lock for announcements
+    let isAnnouncing = false;
+    let announceQueue = [];
+    let lastAnnounceTs = 0;
+
     /*****************
      * DOM
      *****************/
     const rowsEl = document.getElementById("rows");
     const nowOrderEl = document.getElementById("nowOrder");
     const nowNameEl = document.getElementById("nowName");
+    const nowNumberEl = document.getElementById("nowNumber");
     const lastAnnounceEl = document.getElementById("lastAnnounce");
     const overlayEl = document.getElementById("overlay");
     const announceWhoEl = document.getElementById("announceWho");
@@ -475,6 +570,8 @@
     const clockEl = document.getElementById("clock");
     const nextRefreshEl = document.getElementById("nextRefresh");
     const audioEl = document.getElementById("goalChant");
+    const jerseyImgEl = document.getElementById("jerseyImg");
+    const jerseyFrameEl = document.getElementById("jerseyFrame");
 
     function pad2(n){ return String(n).padStart(2,"0"); }
     function fmtTime(d){ return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; }
@@ -483,11 +580,12 @@
       const sorted = [...items].sort((a,b) => (b.ready - a.ready) || (a.order - b.order));
 
       const firstReady = sorted.find(x => x.ready);
-      nowOrderEl.textContent = firstReady ? firstReady.order : "—";
+      nowOrderEl.textContent = firstReady ? `#${firstReady.order}` : "—";
       nowNameEl.textContent = firstReady ? firstReady.name : "—";
+      nowNumberEl.textContent = firstReady ? firstReady.number : "—";
 
       rowsEl.innerHTML = "";
-      for(const it of sorted.slice(0, 10)){
+      for(const it of sorted.slice(0, 12)){
         const tr = document.createElement("tr");
         if(it._highlight) tr.classList.add("highlightRow");
 
@@ -499,6 +597,10 @@
         tdName.style.letterSpacing = ".8px";
         tdName.textContent = it.name;
 
+        const tdNumber = document.createElement("td");
+        tdNumber.style.fontWeight = "900";
+        tdNumber.textContent = it.number;
+
         const tdStatus = document.createElement("td");
         const pill = document.createElement("span");
         pill.className = "status" + (it.ready ? " ready" : "");
@@ -507,6 +609,7 @@
 
         tr.appendChild(tdOrder);
         tr.appendChild(tdName);
+        tr.appendChild(tdNumber);
         tr.appendChild(tdStatus);
 
         rowsEl.appendChild(tr);
@@ -523,34 +626,6 @@
       nextRefreshEl.textContent = `${fmtTime(next)} (+${seconds}s)`;
     }
 
-    /*****************
-     * Audio: play only 7 seconds
-     *****************/
-    function playGoalChant7s(){
-      if(!soundEnabled) return;
-
-      try{
-        if(goalAudioTimeout){
-          clearTimeout(goalAudioTimeout);
-          goalAudioTimeout = null;
-        }
-
-        audioEl.pause();
-        audioEl.currentTime = 0;
-        audioEl.volume = 1.0;
-
-        audioEl.play().catch(()=>{});
-
-        goalAudioTimeout = setTimeout(() => {
-          audioEl.pause();
-          audioEl.currentTime = 0;
-        }, GOAL_AUDIO_DURATION_MS);
-      }catch(e){}
-    }
-
-    /*****************
-     * Confetti
-     *****************/
     function buildConfetti(){
       confettiEl.innerHTML = "";
       const colors = ["#EDBB00", "#FFFFFF", "#A50044", "#004D98"];
@@ -572,68 +647,167 @@
       }
     }
 
-    /*****************
-     * Announcement
-     *****************/
-    function announce(item){
-      items.forEach(x => x._highlight = false);
-      item._highlight = true;
-      render();
+    /* ================
+       Audio hard-stop
+    ================= */
+    function stopAudioHard(){
+      try{
+        if(goalAudioTimeout){
+          clearTimeout(goalAudioTimeout);
+          goalAudioTimeout = null;
+        }
+        audioEl.pause();
+        audioEl.currentTime = 0;
+      }catch(e){}
+    }
 
-      lastAnnounceEl.textContent = fmtTime(new Date());
-      announceWhoEl.innerHTML = `Pedido <b>#${item.order}</b> · <b>${item.name}</b> — ¡puede pasar a recogerlo!`;
+    function playGoalChant7s(){
+      if(!soundEnabled) return;
 
-      buildConfetti();
-      overlayEl.classList.add("show");
-      playGoalChant7s();
+      stopAudioHard(); // no solapamientos
+
+      try{
+        audioEl.volume = 1.0;
+        audioEl.play().catch(()=>{});
+
+        goalAudioTimeout = setTimeout(() => {
+          stopAudioHard();
+        }, GOAL_AUDIO_DURATION_MS);
+      }catch(e){}
+    }
+
+    /* ================
+       Announcement queue
+    ================= */
+    function enqueueAnnounce(item){
+      const src = assetFor(item.name, item.number);
+      if(!src) return; // si no hay asset, no hay GOAL
+
+      // si ya está en cola, no lo repitas
+      const alreadyQueued = announceQueue.some(x => x.order === item.order);
+      if(isAnnouncing){
+        if(!alreadyQueued) announceQueue.push(item);
+        return;
+      }
+
+      runAnnounce(item);
+    }
+
+    function runAnnounce(item){
+      isAnnouncing = true;
+
+      // cooldown mínimo entre GOALs
+      const now = Date.now();
+      const sinceLast = now - lastAnnounceTs;
+      const wait = Math.max(0, MIN_GAP_BETWEEN_GOALS_MS - sinceLast);
 
       setTimeout(() => {
+        lastAnnounceTs = Date.now();
+
+        // reset fuerte por si venimos de una animación anterior
+        stopAudioHard();
         overlayEl.classList.remove("show");
-        item._highlight = false;
+
+        // highlight row
+        items.forEach(x => x._highlight = false);
+        item._highlight = true;
         render();
-      }, ANNOUNCE_MS);
+
+        lastAnnounceEl.textContent = fmtTime(new Date());
+
+        const src = assetFor(item.name, item.number);
+        if(!src){
+          // safety
+          isAnnouncing = false;
+          const next = announceQueue.shift();
+          if(next) runAnnounce(next);
+          return;
+        }
+
+        jerseyFrameEl.style.display = "block";
+        jerseyImgEl.style.display = "block";
+        jerseyImgEl.src = src + `?v=${Date.now()}`;
+
+        // re-trigger spin even with cached images
+        jerseyImgEl.style.animation = "none";
+        jerseyImgEl.offsetHeight;
+        jerseyImgEl.style.animation = "";
+
+        announceWhoEl.innerHTML = `Pedido <b>#${item.order}</b> · <b>${item.name}</b> <b>${item.number}</b> — ¡puede pasar a recogerlo!`;
+
+        buildConfetti();
+
+        // show overlay on top
+        overlayEl.classList.add("show");
+
+        // audio
+        playGoalChant7s();
+
+        // close
+        setTimeout(() => {
+          stopAudioHard();
+          overlayEl.classList.remove("show");
+          item._highlight = false;
+          render();
+
+          isAnnouncing = false;
+
+          const next = announceQueue.shift();
+          if(next) runAnnounce(next);
+        }, ANNOUNCE_MS);
+
+      }, wait);
     }
 
     /*****************
-     * Simulation (polling)
+     * Polling simulation (NO new orders, NO random names)
      *****************/
-    function randomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-
     function simulatePoll(){
-      const r = Math.random();
-
-      if(r < 0.55){
-        const pending = items.filter(x => !x.ready);
-        if(pending.length){
-          const pick = pending[(Math.random()*pending.length)|0];
-          pick.ready = true;
-          pick.status = "Ready for pickup";
-        }
-      }else{
-        const newOrder = (items.reduce((m,x)=>Math.max(m,x.order), 140000) + randomInt(7, 62));
-        const name = DEMO_NAMES[(Math.random()*DEMO_NAMES.length)|0];
-        const statuses = ["Picking Name","Picking Number & Letter","Printing","Plottering"];
-        const st = statuses[(Math.random()*statuses.length)|0];
-        items.push({ order: newOrder, name, status: st, ready: false, announced: false });
+      // Si ya estamos anunciando, evitamos generar más presión; aún así la cola lo soporta
+      const pending = items.filter(x => !x.ready);
+      if(!pending.length){
+        render();
+        return;
       }
 
-      const newlyReady = items.filter(x => x.ready && !x.announced).sort((a,b) => a.order - b.order);
+      const pick = pending[(Math.random()*pending.length)|0];
+      pick.ready = true;
+      pick.status = "Ready for pickup";
+
+      const newlyReady = items
+        .filter(x => x.ready && !x.announced)
+        .sort((a,b) => a.order - b.order);
 
       if(newlyReady.length){
         const item = newlyReady[0];
         item.announced = true;
-        announce(item);
-      }else{
+
+        // Only announce if asset exists
+        const src = assetFor(item.name, item.number);
+        if(src) enqueueAnnounce(item);
+        else render();
+      } else {
         render();
       }
     }
 
-    function forceReady(order, name){
-      const item = { order, name, status: "Ready for pickup", ready: true, announced: false };
-      items.unshift(item);
+    function forceReady(order, name, number){
+      // Upsert into list
+      let existing = items.find(x => x.order === order);
+      if(!existing){
+        existing = { order, name, number, status: "Ready for pickup", ready: true, announced: false };
+        items.unshift(existing);
+      } else {
+        existing.name = name;
+        existing.number = number;
+        existing.ready = true;
+        existing.status = "Ready for pickup";
+        existing.announced = false;
+      }
+
       setTimeout(() => {
-        item.announced = true;
-        announce(item);
+        existing.announced = true;
+        enqueueAnnounce(existing);
       }, 80);
     }
 
@@ -655,27 +829,27 @@
       setNextRefresh(countdown);
     }, 1000);
 
-    overlayEl.addEventListener("click", () => overlayEl.classList.remove("show"));
+    overlayEl.addEventListener("click", () => {
+      // cerrar manualmente también corta audio y desbloquea cola
+      stopAudioHard();
+      overlayEl.classList.remove("show");
+    });
 
     document.getElementById("toggleSound").addEventListener("click", (e) => {
       soundEnabled = !soundEnabled;
       e.currentTarget.textContent = soundEnabled ? "🔇 Desactivar sonido" : "🔊 Activar sonido";
 
-      // unlock audio pipeline
+      // Unlock audio pipeline
       if(soundEnabled){
         audioEl.play().then(()=>audioEl.pause()).catch(()=>{});
       }else{
-        try{
-          if(goalAudioTimeout) clearTimeout(goalAudioTimeout);
-          audioEl.pause();
-          audioEl.currentTime = 0;
-        }catch(_){}
+        stopAudioHard();
       }
     });
 
-    // demo: ensure requested names appear
+    // Forced: your two announcements
     for(const f of FORCED_READY_SEQUENCE){
-      setTimeout(() => forceReady(f.order, f.name), f.delayMs);
+      setTimeout(() => forceReady(f.order, f.name, f.number), f.delayMs);
     }
   </script>
 </body>
