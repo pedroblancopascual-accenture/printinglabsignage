@@ -15,7 +15,6 @@
       --muted: rgba(255,255,255,.68);
       --shadow: 0 18px 60px rgba(0,0,0,.45);
       --radius: 22px;
-      --bezel: rgba(0,0,0,.35);
       --bezelLine: rgba(255,255,255,.10);
     }
 
@@ -150,7 +149,7 @@
       border-radius: 26px;
       padding: 12px;
       background: linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.55));
-      border: 1px solid var(--bezelLine);
+      border: 1px solid rgba(255,255,255,.10);
       box-shadow: 0 22px 70px rgba(0,0,0,.55);
       min-height:0;
       overflow:hidden;
@@ -179,7 +178,6 @@
     .screenBadge{
       width:10px; height:10px; border-radius:50%;
       background: rgba(255,255,255,.25);
-      box-shadow: 0 0 0 0 rgba(237,187,0,0);
     }
     .screenTitle{
       font-weight:900;
@@ -247,6 +245,13 @@
       font-size:16px;
     }
 
+    .statusWrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
     .status{
       display:inline-flex; align-items:center; gap:10px;
       padding:8px 12px;
@@ -277,6 +282,27 @@
     }
     .qtyPill b{ letter-spacing:.6px; }
 
+    .lanePillSmall{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(237,187,0,.40);
+      background: rgba(237,187,0,.10);
+      color: rgba(255,255,255,.92);
+      font-size:12px;
+      font-weight: 900;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      white-space:nowrap;
+    }
+    .lanePillSmall .spark{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--gold);
+      box-shadow: 0 0 12px rgba(237,187,0,.55);
+    }
+
     .highlightRow{
       background: linear-gradient(90deg, rgba(237,187,0,.16), rgba(165,0,68,.10), rgba(0,77,152,.10));
       box-shadow: inset 0 0 0 1px rgba(237,187,0,.18);
@@ -306,7 +332,7 @@
     .desc{ font-size:14px; color:rgba(255,255,255,.84); line-height:1.35; }
     .desc b{ color:rgba(255,255,255,.95); }
 
-    /* Screen 2 base (always-on detail) */
+    /* Screen 2 base */
     .s2{
       height:100%;
       padding:14px;
@@ -345,6 +371,30 @@
     .heroMeta{
       color: rgba(255,255,255,.78);
       font-size: 13px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .laneBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(237,187,0,.55);
+      background: rgba(237,187,0,.14);
+      color: rgba(255,255,255,.96);
+      font-weight: 900;
+      letter-spacing: .8px;
+      box-shadow: 0 0 0 1px rgba(237,187,0,.10) inset;
+      white-space:nowrap;
+      text-transform:uppercase;
+    }
+    .laneBadge .spark{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--gold);
+      box-shadow: 0 0 14px rgba(237,187,0,.65);
     }
     .heroCrest{
       width: 54px;
@@ -354,7 +404,7 @@
       filter: drop-shadow(0 10px 28px rgba(0,0,0,.45));
     }
 
-    /* GOAL overlay inside Screen 2 */
+    /* Goal stage */
     .goalStage{
       position:relative;
       min-height:0;
@@ -400,10 +450,54 @@
     }
     @keyframes fall{ to{ transform: translateY(130vh) rotate(520deg); opacity:.9; } }
 
+    /* ✅ Goal header enhanced */
     .goalTop{
-      padding:18px 22px 8px 22px;
-      display:flex; justify-content:space-between; align-items:center; gap:14px;
+      padding:18px 22px 10px 22px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:14px;
     }
+    .goalTopLeft{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .goalTopRight{
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-end;
+      gap:12px;
+      flex-wrap:wrap;
+      text-align:right;
+    }
+    .goalOrderBig{
+      display:inline-flex;
+      align-items:baseline;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    }
+    .goalOrderBig .k{
+      font-size:12px;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.78);
+      font-weight: 900;
+      white-space:nowrap;
+    }
+    .goalOrderBig .v{
+      font-size:22px;
+      letter-spacing:1.2px;
+      font-weight: 1100;
+      color: rgba(255,255,255,.96);
+      white-space:nowrap;
+    }
+
     .goalTop .tag{
       display:inline-flex; gap:10px; align-items:center;
       padding:10px 14px;
@@ -414,6 +508,7 @@
       color:rgba(255,255,255,.82);
       letter-spacing:.5px;
       text-transform:uppercase;
+      white-space:nowrap;
     }
     .goalTop .tag .spark{
       width:10px; height:10px; border-radius:50%;
@@ -421,8 +516,30 @@
       box-shadow: 0 0 18px rgba(237,187,0,.8);
     }
 
+    .laneHeroChip{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(237,187,0,.70);
+      background: rgba(237,187,0,.16);
+      box-shadow: 0 0 26px rgba(237,187,0,.22);
+      font-weight: 1000;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.96);
+      width: fit-content;
+      white-space:nowrap;
+    }
+    .laneHeroChip .spark{
+      width:10px; height:10px; border-radius:50%;
+      background: var(--gold);
+      box-shadow: 0 0 18px rgba(237,187,0,.8);
+    }
+
     .goalMain{
-      padding: 6px 22px 18px 22px;
+      padding: 0px 22px 18px 22px;
       display:grid;
       gap:12px;
       text-align:center;
@@ -434,6 +551,7 @@
       line-height:1;
       text-shadow: 0 14px 40px rgba(0,0,0,.35);
       animation: chant 1.8s ease-in-out infinite;
+      margin-top: 6px;
     }
     @keyframes chant{
       0%,100%{ transform: translateY(6px) scale(1); }
@@ -446,7 +564,7 @@
       opacity:.96;
     }
 
-    /* Carousel (slide) */
+    /* Carousel */
     .carouselWrap{
       width:min(640px, 92%);
       margin: 0 auto;
@@ -544,12 +662,14 @@
       background: var(--gold);
       box-shadow: 0 0 14px rgba(237,187,0,.65);
     }
+
     .who{
       margin-top:10px;
       font-size:14px;
       color: rgba(255,255,255,.78);
       letter-spacing:.4px;
       text-align:center;
+      line-height:1.35;
     }
 
     /* Mode switching */
@@ -604,7 +724,7 @@
           <span class="screenTitle">SCREEN 1</span>
           <span style="opacity:.65">· Orders + Now serving</span>
         </div>
-        <div style="opacity:.7">v3.0</div>
+        <div style="opacity:.7">v3.4</div>
       </div>
       <div class="screenBody">
         <div class="s1">
@@ -650,6 +770,11 @@
                   <div class="label">Order</div>
                   <div class="bigNumber" id="nowOrder">—</div>
 
+                  <div class="label">Pickup</div>
+                  <div>
+                    <span class="laneBadge" id="nowLane"><span class="spark"></span> LINEAL —</span>
+                  </div>
+
                   <div class="label">Personalized items</div>
                   <div class="desc"><b id="nowCount">—</b> prendas personalizadas</div>
 
@@ -676,7 +801,6 @@
             </div>
           </div>
 
-          <!-- small footer inside screen 1 -->
           <div class="panel" style="padding:14px 16px; border-radius:18px;">
             <div style="display:flex;justify-content:space-between;align-items:center;color:rgba(255,255,255,.72);font-size:12px;">
               <div>Operativa · Estado en amarillo = listo</div>
@@ -700,19 +824,20 @@
 
       <div class="screenBody">
         <div class="s2">
-          <!-- Always-on detail header -->
           <div class="hero">
             <div class="heroLeft">
               <div class="heroTitle">Último pedido preparado</div>
               <div class="heroOrder" id="s2Order">—</div>
-              <div class="heroMeta"><span id="s2Items">—</span> items · <span style="color:rgba(237,187,0,.9);font-weight:800">Ready for pickup</span></div>
+              <div class="heroMeta">
+                <span><span id="s2Items">—</span> items</span>
+                <span style="color:rgba(237,187,0,.9);font-weight:800">Ready for pickup</span>
+                <span class="laneBadge" id="s2Lane"><span class="spark"></span> LINEAL —</span>
+              </div>
             </div>
             <img class="heroCrest" src="assets/logo.png" alt="FC Barcelona" />
           </div>
 
-          <!-- Goal stage (overlay happens here) -->
           <div class="goalStage">
-            <!-- idle background message -->
             <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:22px; color:rgba(255,255,255,.70); z-index:1;">
               <div>
                 <div style="font-size:18px; font-weight:900; letter-spacing:1px;">FC BARCELONA</div>
@@ -725,14 +850,24 @@
               </div>
             </div>
 
-            <!-- overlay -->
             <div class="goalOverlay" id="overlayS2" role="dialog" aria-modal="true">
               <div class="goalCard">
                 <div class="confetti" id="confetti"></div>
 
+                <!-- ✅ Top header now: tag (left) + ORDER + LINEAL (right) -->
                 <div class="goalTop">
-                  <div class="tag"><span class="spark"></span> Ready for pickup</div>
-                  <img class="heroCrest" src="assets/logo.png" alt="FC Barcelona" style="width:44px;height:44px;" />
+                  <div class="goalTopLeft">
+                    <div class="tag"><span class="spark"></span> Ready for pickup</div>
+                    <img class="heroCrest" src="assets/logo.png" alt="FC Barcelona" style="width:44px;height:44px;" />
+                  </div>
+
+                  <div class="goalTopRight">
+                    <div class="goalOrderBig" aria-label="Order number">
+                      <span class="k">ORDER</span>
+                      <span class="v" id="goalOrderTop">#—</span>
+                    </div>
+                    <div class="laneHeroChip" id="laneHeroChip"><span class="spark"></span> PICKUP · LINEAL —</div>
+                  </div>
                 </div>
 
                 <div class="goalMain">
@@ -751,7 +886,7 @@
 
                     <div class="carouselMeta">
                       <div class="left">
-                        <span class="chip"><span class="spark"></span> Order <b id="goalOrder">—</b></span>
+                        <!-- ✅ removed the "Order #..." chip from bottom -->
                         <span class="chip">Item <b id="goalItemIdx">—</b>/<b id="goalItemTotal">—</b></span>
                         <span class="chip">Jersey <b id="goalItemLabel">—</b></span>
                       </div>
@@ -763,8 +898,7 @@
                 </div>
               </div>
             </div>
-            <!-- /overlay -->
-          </div>
+          </div><!-- /goalStage -->
         </div>
       </div>
     </section>
@@ -776,27 +910,16 @@
   </audio>
 
   <script>
-    /*****************
-     * Config
-     *****************/
     const POLL_EVERY_SEC = 6;
     const GOAL_AUDIO_DURATION_MS = 7000;
-
-    // Experience duration
     const ANNOUNCE_MS = 9800;
-
-    // Queue pacing
     const MIN_GAP_BETWEEN_GOALS_MS = 1500;
 
-    // Carousel
     const CAROUSEL_INTERVAL_MS = 2800;
     const AUTOPAUSE_LAST_MS = 2000;
     const TRANSITION_MS = 600;
     const HOLD_BACK_TO_FIRST_MS = 900;
 
-    /*****************
-     * Allowed jersey assets (ONLY these)
-     *****************/
     const ALLOWED_ASSETS = {
       "ALB GARRIGA|7": "alb-garriga-7.png",
       "ARAUJO|4": "araujo-4.png",
@@ -827,25 +950,22 @@
       return `${normalizeName(item.name)} ${item.number}`;
     }
 
-    /*****************
-     * Orders model
-     *****************/
     const INITIAL_ORDERS = [
-      { order:135037, items:[{name:"JAUME",number:8}], status:"Ready for pickup", ready:true,  announced:true },
-      { order:147765, items:[{name:"RAPHINHA",number:11}], status:"Ready for pickup", ready:true,  announced:true },
+      { order:135037, pickupLane: 1, items:[{name:"JAUME",number:8}], status:"Ready for pickup", ready:true,  announced:true },
+      { order:147765, pickupLane: 2, items:[{name:"RAPHINHA",number:11}], status:"Ready for pickup", ready:true,  announced:true },
 
-      { order:149102, items:[{name:"PEDRI",number:8}], status:"Printing", ready:false, announced:false },
-      { order:149211, items:[{name:"GAVI",number:6}], status:"Picking Name", ready:false, announced:false },
-      { order:149254, items:[{name:"LAMINE",number:10}], status:"Plottering", ready:false, announced:false },
-      { order:149310, items:[{name:"ARAUJO",number:4}], status:"Picking Number", ready:false, announced:false },
-      { order:149388, items:[{name:"BALDE",number:3}], status:"Printing", ready:false, announced:false },
-      { order:149401, items:[{name:"FERRAN",number:7}], status:"Plottering", ready:false, announced:false },
-      { order:149512, items:[{name:"TER STEGEN",number:1}], status:"Printing", ready:false, announced:false },
-      { order:149640, items:[{name:"KOUNDE",number:24}], status:"Picking Name", ready:false, announced:false },
+      { order:149102, pickupLane: null, items:[{name:"PEDRI",number:8}], status:"Printing", ready:false, announced:false },
+      { order:149211, pickupLane: null, items:[{name:"GAVI",number:6}], status:"Picking Name", ready:false, announced:false },
+      { order:149254, pickupLane: null, items:[{name:"LAMINE",number:10}], status:"Plottering", ready:false, announced:false },
+      { order:149310, pickupLane: null, items:[{name:"ARAUJO",number:4}], status:"Picking Number", ready:false, announced:false },
+      { order:149388, pickupLane: null, items:[{name:"BALDE",number:3}], status:"Printing", ready:false, announced:false },
+      { order:149401, pickupLane: null, items:[{name:"FERRAN",number:7}], status:"Plottering", ready:false, announced:false },
+      { order:149512, pickupLane: null, items:[{name:"TER STEGEN",number:1}], status:"Printing", ready:false, announced:false },
+      { order:149640, pickupLane: null, items:[{name:"KOUNDE",number:24}], status:"Picking Name", ready:false, announced:false },
 
-      // Pedido multi-jersey (demo)
       {
         order:159010,
+        pickupLane: null,
         items:[
           { name:"JESÚS MILLA", number:10 },
           { name:"JESÚS MILLA", number:21 },
@@ -861,9 +981,6 @@
       { delayMs: 2500, order: 159010 }
     ];
 
-    /*****************
-     * State
-     *****************/
     let orders = structuredClone(INITIAL_ORDERS);
     let soundEnabled = false;
     let goalAudioTimeout = null;
@@ -872,7 +989,6 @@
     let announceQueue = [];
     let lastAnnounceTs = 0;
 
-    // Carousel runtime
     let carouselTimer = null;
     let carouselIdx = 0;
     let carouselItems = [];
@@ -880,14 +996,11 @@
     let overlayEndsAt = 0;
     let completedOneLoop = false;
 
-    // last ready for Screen 2
     let lastReadyOrder = null;
 
-    /*****************
-     * DOM
-     *****************/
     const rowsEl = document.getElementById("rows");
     const nowOrderEl = document.getElementById("nowOrder");
+    const nowLaneEl = document.getElementById("nowLane");
     const nowCountEl = document.getElementById("nowCount");
     const nowPreviewEl = document.getElementById("nowPreview");
 
@@ -902,17 +1015,19 @@
     const imgA = document.getElementById("imgA");
     const imgB = document.getElementById("imgB");
 
-    const goalOrderEl = document.getElementById("goalOrder");
+    const goalOrderTopEl = document.getElementById("goalOrderTop");
     const goalItemIdxEl = document.getElementById("goalItemIdx");
     const goalItemTotalEl = document.getElementById("goalItemTotal");
     const goalItemLabelEl = document.getElementById("goalItemLabel");
     const goalItemsCountEl = document.getElementById("goalItemsCount");
     const announceWhoEl = document.getElementById("announceWho");
+    const laneHeroChipEl = document.getElementById("laneHeroChip");
 
     const dotsEl = document.getElementById("dots");
 
     const s2OrderEl = document.getElementById("s2Order");
     const s2ItemsEl = document.getElementById("s2Items");
+    const s2LaneEl = document.getElementById("s2Lane");
 
     const modeDualBtn = document.getElementById("modeDual");
     const mode1Btn = document.getElementById("mode1");
@@ -925,14 +1040,21 @@
       return order.items.every(it => !!assetFor(it.name, it.number));
     }
 
+    function setLaneUIFor(el, lane){
+      const val = (lane ?? "—");
+      el.innerHTML = `<span class="spark"></span> LINEAL ${val}`;
+    }
+
     function updateScreen2LastReady(){
       if(!lastReadyOrder){
         s2OrderEl.textContent = "—";
         s2ItemsEl.textContent = "—";
+        setLaneUIFor(s2LaneEl, "—");
         return;
       }
       s2OrderEl.textContent = `#${lastReadyOrder.order}`;
       s2ItemsEl.textContent = `${lastReadyOrder.items.length}`;
+      setLaneUIFor(s2LaneEl, lastReadyOrder.pickupLane ?? "—");
     }
 
     function render(){
@@ -942,6 +1064,7 @@
       nowOrderEl.textContent = firstReady ? `#${firstReady.order}` : "—";
       nowCountEl.textContent = firstReady ? `${firstReady.items.length}` : "—";
       nowPreviewEl.textContent = firstReady ? firstReady.items.map(labelFor).join(" · ") : "—";
+      setLaneUIFor(nowLaneEl, firstReady ? firstReady.pickupLane : "—");
 
       rowsEl.innerHTML = "";
       for(const o of sorted.slice(0, 12)){
@@ -957,11 +1080,23 @@
         tdCount.innerHTML = `<span class="qtyPill"><b>${o.items.length}</b> items</span>`;
 
         const tdStatus = document.createElement("td");
+        const wrap = document.createElement("div");
+        wrap.className = "statusWrap";
+
         const pill = document.createElement("span");
         pill.className = "status" + (o.ready ? " ready" : "");
         const st = o.ready ? "Ready for pickup" : o.status;
         pill.innerHTML = `<span class="miniDot"></span> ${st}`;
-        tdStatus.appendChild(pill);
+        wrap.appendChild(pill);
+
+        if(o.ready){
+          const lane = document.createElement("span");
+          lane.className = "lanePillSmall";
+          lane.innerHTML = `<span class="spark"></span> LINEAL ${o.pickupLane ?? "—"}`;
+          wrap.appendChild(lane);
+        }
+
+        tdStatus.appendChild(wrap);
 
         tr.appendChild(tdOrder);
         tr.appendChild(tdCount);
@@ -998,7 +1133,6 @@
       }
     }
 
-    /* Audio hard-stop */
     function stopAudioHard(){
       try{
         if(goalAudioTimeout){
@@ -1019,7 +1153,6 @@
       }catch(e){}
     }
 
-    /* Progress dots */
     function renderDots(total, activeIdx){
       dotsEl.innerHTML = "";
       if(total <= 1) return;
@@ -1037,7 +1170,6 @@
       });
     }
 
-    /* Carousel control (slide) */
     function stopCarousel(){
       if(carouselTimer){
         clearInterval(carouselTimer);
@@ -1056,7 +1188,6 @@
     }
 
     function setCarouselMeta(order, idx){
-      goalOrderEl.textContent = `#${order.order}`;
       goalItemIdxEl.textContent = `${idx+1}`;
       goalItemTotalEl.textContent = `${carouselItems.length}`;
       goalItemLabelEl.textContent = labelFor(carouselItems[idx]);
@@ -1137,7 +1268,6 @@
           return;
         }
 
-        // last -> pause -> back to 0 -> HOLD
         if(remainingOverlayMs() < AUTOPAUSE_LAST_MS + TRANSITION_MS + HOLD_BACK_TO_FIRST_MS){
           if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
           return;
@@ -1157,7 +1287,6 @@
       }, CAROUSEL_INTERVAL_MS);
     }
 
-    /* Announcement queue */
     function enqueueAnnounce(order){
       if(!order.ready) return;
       if(!hasAllAssets(order)) return;
@@ -1187,15 +1316,28 @@
         orders.forEach(o => o._highlight = false);
         order._highlight = true;
 
-        // Update last ready on Screen 2
+        // Assign lane ONLY when ready (demo rule)
+        if(order.ready && (order.pickupLane == null)){
+          order.pickupLane = 1 + ((Math.random()*4)|0);
+        }
+
         lastReadyOrder = order;
+        updateScreen2LastReady();
 
         render();
         lastAnnounceEl.textContent = fmtTime(new Date());
 
         buildConfetti();
+
+        const lane = order.pickupLane ?? "—";
+
+        // ✅ ORDER displayed prominently at top
+        goalOrderTopEl.textContent = `#${order.order}`;
+        laneHeroChipEl.innerHTML = `<span class="spark"></span> PICKUP · LINEAL ${lane}`;
+
+        // Screen 2 message without repeating lane
         announceWhoEl.innerHTML =
-          `Pedido <b>#${order.order}</b> · <b>${order.items.length}</b> prendas personalizadas — ¡puede pasar a recogerlo!`;
+          `Pedido <b>#${order.order}</b> · <b>${order.items.length}</b> prendas personalizadas — puede pasar a recogerlo.`;
 
         overlayEl.classList.add("show");
 
@@ -1218,7 +1360,6 @@
       }, wait);
     }
 
-    /* Polling simulation */
     function simulatePoll(){
       const pending = orders.filter(o => !o.ready);
       if(!pending.length){ render(); return; }
@@ -1226,6 +1367,9 @@
       const pick = pending[(Math.random()*pending.length)|0];
       pick.ready = true;
       pick.status = "Ready for pickup";
+      if(pick.pickupLane == null){
+        pick.pickupLane = 1 + ((Math.random()*4)|0);
+      }
 
       const newlyReady = orders.filter(o => o.ready && !o.announced).sort((a,b)=>a.order-b.order);
       if(newlyReady.length){
@@ -1242,13 +1386,13 @@
       if(!o) return;
       o.ready = true;
       o.status = "Ready for pickup";
+      if(o.pickupLane == null){
+        o.pickupLane = 1 + ((Math.random()*4)|0);
+      }
       o.announced = true;
       enqueueAnnounce(o);
     }
 
-    /*****************
-     * Screen mode (dual / 1 / 2)
-     *****************/
     function setMode(mode){
       document.body.classList.remove("mode-1","mode-2");
       modeDualBtn.classList.remove("active");
@@ -1282,23 +1426,19 @@
     mode1Btn.addEventListener("click", () => setMode("1"));
     mode2Btn.addEventListener("click", () => setMode("2"));
 
-    // keyboard shortcuts: 0=dual, 1=screen1, 2=screen2
     window.addEventListener("keydown", (e) => {
       if(e.key === "0") setMode("dual");
       if(e.key === "1") setMode("1");
       if(e.key === "2") setMode("2");
     });
 
-    /*****************
-     * Boot
-     *****************/
     render();
     initModeFromUrl();
 
     setClock();
-    setNextRefresh(POLL_EVERY_SEC);
     setInterval(setClock, 1000);
 
+    setNextRefresh(POLL_EVERY_SEC);
     let countdown = POLL_EVERY_SEC;
     setInterval(() => {
       countdown--;
@@ -1309,7 +1449,6 @@
       setNextRefresh(countdown);
     }, 1000);
 
-    // Click on overlay to close
     overlayEl.addEventListener("click", () => {
       stopAudioHard();
       stopCarousel();
@@ -1326,7 +1465,6 @@
       }
     });
 
-    // forced demo (multi-jersey first)
     for(const f of FORCED_READY_SEQUENCE){
       setTimeout(() => forceReady(f.order), f.delayMs);
     }
